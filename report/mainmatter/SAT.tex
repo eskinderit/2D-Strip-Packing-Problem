@@ -3,6 +3,8 @@
 
 \section{Domain and search strategy}
 
+This approach was largely inspired by some concepts presented in \cite{example_book}.
+
 In SAT it is not possible to specify a function to minimize as instead we've done in CP. In this case it is necessary to define a \textbf{lower bound} and an \textit{upper bound} to explore the domain. The width of the strip $W$ is predefined (and therefore fixed) while $H$ can be chosen as follows:
 
 $$H_{LB} = \lceil \frac{\sum_{i \in \{0, .., N-1\}}{A_{i}}}{W} \rceil =\lceil \frac{\sum_{i \in \{0, .., N-1\}}{width_{i} \cdot height_{i}}}{W} \rceil$$
