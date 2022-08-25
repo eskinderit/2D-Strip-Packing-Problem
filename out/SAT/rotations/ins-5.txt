@@ -1,0 +1,11 @@
+Silicon Plate Width: 12, Silicon Plate Height: 12 
+coordinate for rectangle[0]: (x: ,0, y: 9), width: 3, height: 3, rotated: No 
+coordinate for rectangle[1]: (x: ,6, y: 0), width: 3, height: 4, rotated: No 
+coordinate for rectangle[2]: (x: ,9, y: 0), width: 3, height: 5, rotated: No 
+coordinate for rectangle[3]: (x: ,0, y: 3), width: 3, height: 6, rotated: No 
+coordinate for rectangle[4]: (x: ,9, y: 5), width: 3, height: 7, rotated: No 
+coordinate for rectangle[5]: (x: ,6, y: 4), width: 3, height: 8, rotated: No 
+coordinate for rectangle[6]: (x: ,3, y: 3), width: 3, height: 9, rotated: No 
+coordinate for rectangle[7]: (x: ,0, y: 0), width: 6, height: 3, rotated: No 
+z3 time: 0.035
+z3_encoding time: 1.4349274635314941
