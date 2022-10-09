@@ -1,7 +1,0 @@
-Silicon Plate Width: 8, Silicon Plate Height: 8 
-coordinate for rectangle[0]: (x: ,0, y: 0), width: 3, height: 3, rotated: No 
-coordinate for rectangle[1]: (x: ,0, y: 3), width: 3, height: 5, rotated: No 
-coordinate for rectangle[2]: (x: ,3, y: 0), width: 5, height: 3, rotated: No 
-coordinate for rectangle[3]: (x: ,3, y: 3), width: 5, height: 5, rotated: No 
-z3 time: 0.015
- z3+encoding time: 0.16238117218017578
