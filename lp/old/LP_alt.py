@@ -124,81 +124,63 @@ class LP_Instance():
 
         return widths, heights
 
-    def get_squares_index(self):
-        squares = []
-        for i in range(0, len(self.rectangles)):
-            if self.rectangles[i].is_square():
-                squares.append(i)
-        return squares
 
+def lp_benchmark(start, end, timeout, verbose = True):
+    """
+    performs a benchmark in which instances having index from
+    start to end are tested
+    """
 
-def lp_rotated_benchmark(index, timeout, verbose=True, plot=True):
     timeout_ = timedelta(seconds=timeout)
 
-    url = f"instances/ins-{index}.txt"
-    lp_instance = LP_Instance(url)
-    width, height = lp_instance.get_width_height()
+    for j in range(start,end+1):
+        url = f"../../instances/ins-{j}.txt"
+        lp_instance = LP_Instance(url)
+        width, height = lp_instance.get_width_height()
 
-    # Load 2d-strip-packaging model from file
-    model = Model("./LP_rotated.mzn")
+        # Load n-Queens model from file
+        model = Model("./LP_alt.mzn")
 
-    # Find the MiniZinc solver configuration
-    solver = Solver.lookup("gurobi")
+        # Find the MiniZinc solver configuration for Gecode
+        solver = Solver.lookup("gurobi")
 
-    # Create an Instance of the 2d-strip-packaging model
-    mzn_instance = Instance(solver, model)
+        # Create an Instance of the n-Queens model for Gecode
+        mzn_instance = Instance(solver, model)
 
-    mzn_instance["h_ub"] = lp_instance.H_UB()
-    mzn_instance["h_lb"] = lp_instance.H_LB()
-    mzn_instance["W"] = lp_instance.W
-    mzn_instance["n_rectangles"] = lp_instance.n_instances
-    mzn_instance["rect_height"] = height
-    mzn_instance["rect_width"] = width
-    mzn_instance["biggest_rect"] = lp_instance.biggest_rectangle_index() + 1
+        mzn_instance["h_ub"] = lp_instance.H_UB()
+        mzn_instance["h_lb"] = lp_instance.H_LB()
+        mzn_instance["W"] = lp_instance.W
+        mzn_instance["n_rectangles"] = lp_instance.n_instances
+        mzn_instance["rect_height"] = height
+        mzn_instance["rect_width"] = width
+        mzn_instance["biggest_rect"] = lp_instance.biggest_rectangle_index() + 1
 
-    # solve
-    result = mzn_instance.solve(timeout_)
-    if verbose:
+        # solve
+        result = mzn_instance.solve(timeout_)
         print(result)
-    solve_time = result.statistics["solveTime"].total_seconds()
+        solve_time = result.statistics["solveTime"].total_seconds()
 
-    overtime = False
+        overtime = False
 
-    if round(solve_time+0.6, 0) >= timeout:
-        overtime = True
-        if verbose:
-            print(f"instance {index} overtime")
-    else:
-        if verbose:
-            print(f"Instance {index} solved in ", solve_time)
+        if round(solve_time, 0) >= timeout:
+            overtime = True
+            if verbose:
+                print(f"instance {j} overtime")
+        else:
+            if verbose:
+                print(f"Instance {j} solved in ", solve_time)
 
-    if (result.solution.rect_x is not None) and plot:
         # plot results
         x_pos = result.solution.rect_x
         y_pos = result.solution.rect_y
         H = result.solution.H
-        rotated = result.solution.rotated
+
 
         for i in range(0, lp_instance.n_instances):
-            if (rotated[i]==1):
-                new_width = lp_instance.rectangles[i].height
-                new_height = lp_instance.rectangles[i].width
-                lp_instance.rectangles[i].width = new_width
-                lp_instance.rectangles[i].height = new_height
-
             lp_instance.rectangles[i].x = x_pos[i]
             lp_instance.rectangles[i].y = y_pos[i]
             lp_instance.H = H
-
         plot_rectangles(lp_instance.rectangles, url)
 
-    elif verbose:
-        solve_time = 301
-        overtime = True
-        print("solution not found")
-
-    return solve_time, overtime
-
-
-lp_rotated_benchmark(5, 300)
+lp_benchmark(10, 10, 300)
 

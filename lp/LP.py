@@ -1,9 +1,12 @@
 import sys
+
 from minizinc import Instance, Model, Solver
+
 sys.path.append('../')
 from utils.utils import *
 from datetime import timedelta
 from tqdm import tqdm
+
 
 class LP_Instance:
     """
@@ -21,8 +24,8 @@ class LP_Instance:
         with open(path, 'r') as file:
             file = file.readlines()
 
-            for i in range(2, int(file[1]) + 2):
-                width, height = file[i].split()
+            for j in range(2, int(file[1]) + 2):
+                width, height = file[j].split()
                 rectangles.append(Rectangle(int(width), int(height)))
 
         self.name = path
@@ -31,9 +34,9 @@ class LP_Instance:
         self.n_instances = int(file[1])
         self.rectangles = rectangles
 
-        for i in range(0, len(self.rectangles)):
-            if self.rectangles[i].width > self.W:
-                raise Exception(f"The width of the rectangle n.{i} is over the container width W = {self.W}")
+        for j in range(0, len(self.rectangles)):
+            if self.rectangles[j].width > self.W:
+                raise Exception(f"The width of the rectangle n.{j} is over the container width W = {self.W}")
 
     def H_LB(self):
         """
@@ -61,7 +64,6 @@ class LP_Instance:
         '''
 
         W = self.W
-        placer_x = 0
         occupied_height = [0] * W
 
         for r in self.rectangles:
@@ -117,11 +119,11 @@ class LP_Instance:
             a = self.rectangles[j].width * self.rectangles[j].height
             if a > area:
                 area = a
-                biggest_rectangle_index = j+1
+                biggest_rectangle_index = j + 1
 
         for j in range(len(self.rectangles)):
-            if self.rectangles[j].width > (self.W-area)//2:
-                smaller_rectangles.append(j+1)
+            if self.rectangles[j].width > (self.W - area) // 2:
+                smaller_rectangles.append(j + 1)
 
         return biggest_rectangle_index, smaller_rectangles
 
@@ -137,19 +139,20 @@ class LP_Instance:
 
     def get_large_rectangles_index(self):
         large_rectangles = []
-        for i in range(0, len(self.rectangles)-1):
-            for j in range(i+1, len(self.rectangles)):
+        for i in range(0, len(self.rectangles) - 1):
+            for j in range(i + 1, len(self.rectangles)):
                 if self.rectangles[i].width + self.rectangles[j].width > self.W:
-                    large_rectangles.append([i+1, j+1])
+                    large_rectangles.append([i + 1, j + 1])
 
         return large_rectangles
 
     def get_same_dim_rectangles_index(self):
         same_dim_rectangles = []
-        for i in range(0, len(self.rectangles)-1):
-            for j in range(i+1, len(self.rectangles)):
-                if self.rectangles[i].width == self.rectangles[j].width and self.rectangles[i].height == self.rectangles[j].height:
-                    same_dim_rectangles.append([i+1, j+1])
+        for i in range(0, len(self.rectangles) - 1):
+            for j in range(i + 1, len(self.rectangles)):
+                if self.rectangles[i].width == self.rectangles[j].width and self.rectangles[i].height == \
+                        self.rectangles[j].height:
+                    same_dim_rectangles.append([i + 1, j + 1])
 
         return same_dim_rectangles
 
@@ -157,11 +160,16 @@ class LP_Instance:
         squares = []
         for i in range(0, len(self.rectangles)):
             if self.rectangles[i].is_square():
-                squares.append(i+1)
+                squares.append(i + 1)
         return squares
 
 
 def lp_benchmark(index, timeout, method, solver_name, verbose=True, plot=True):
+    """
+    performs a benchmark in which instances having index from
+    start to end are tested
+    """
+
     timeout_ = timedelta(seconds=timeout)
 
     folder = "../instances/"
@@ -171,14 +179,16 @@ def lp_benchmark(index, timeout, method, solver_name, verbose=True, plot=True):
     width, height = lp_instance.get_width_height()
 
     # Load 2d-strip-packaging model from file
-    if method == "base":
-        model = Model("./LP.mzn")
-    if method == "base-sb":
-        model = Model("./LP_sb.mzn")
     if method == "rotations":
         model = Model("./LP_rotated.mzn")
-    if method == "rotations-sb":
+    elif method == "rotations-sb":
         model = Model("./LP_rotated_SB.mzn")
+    elif method == "base-sb":
+        model = Model("./LP_sb.mzn")
+    elif method == "base":
+        model = Model("./LP.mzn")
+    else:
+        model = Model("./LP.mzn")
 
     # Find the MiniZinc solver configuration
     solver = Solver.lookup(solver_name)
@@ -218,7 +228,7 @@ def lp_benchmark(index, timeout, method, solver_name, verbose=True, plot=True):
 
     time_over = False
 
-    if round(solve_time+0.6, 0) >= timeout:
+    if round(solve_time + 0.6, 0) >= timeout:
         time_over = True
         solve_time = 301
         if verbose:
@@ -260,11 +270,13 @@ def lp_benchmark(index, timeout, method, solver_name, verbose=True, plot=True):
 
 
 def plot_LP_benchmark(instances_to_solve, solver_name, timeout=300, plot=False):
-    '''
-    Plotting the barplot with all the LP solving mechanisms (base, rotations,
-    base + symmetry breaking, rotations + symmetry breaking)
+    """
+    Produces the barplot with all the LP solving mechanisms (base, rotations,
+    base + symmetry breaking, rotations + symmetry breaking). Also produces a
+    file with initial values + final positioning coordinates and total height.
+    In the same folder an output with the resulting time statistics is produced.
 
-    '''
+    """
 
     times_base = []
     times_base_rotate = []
@@ -276,35 +288,35 @@ def plot_LP_benchmark(instances_to_solve, solver_name, timeout=300, plot=False):
     time_overs_SB = []
     time_overs_SB_rotate = []
 
-    for i in tqdm(range(1, instances_to_solve + 1)):
+    for j in tqdm(range(1, instances_to_solve + 1)):
 
         # base
-        time, time_over = lp_benchmark(i, timeout=timeout, method="base", solver_name=solver_name)
+        time, time_over = lp_benchmark(j, timeout=timeout, method="base", solver_name=solver_name)
         times_base.append(time)
 
         if time_over:
-            time_overs_base.append(i - 1)
+            time_overs_base.append(j - 1)
 
         # base + SB
-        time, time_over = lp_benchmark(i, timeout=timeout, method="base-sb", solver_name=solver_name)
+        time, time_over = lp_benchmark(j, timeout=timeout, method="base-sb", solver_name=solver_name)
         times_SB.append(time)
 
         if time_over:
-            time_overs_SB.append(i - 1)
+            time_overs_SB.append(j - 1)
 
         # rotated
-        time, time_over = lp_benchmark(i, timeout=timeout, method="rotations", solver_name=solver_name)
+        time, time_over = lp_benchmark(j, timeout=timeout, method="rotations", solver_name=solver_name)
         times_base_rotate.append(time)
 
         if time_over:
-            time_overs_base_rotate.append(i - 1)
+            time_overs_base_rotate.append(j - 1)
 
         # rotated + SB
-        time, time_over = lp_benchmark(i, timeout=timeout, method="rotations-sb", solver_name=solver_name)
+        time, time_over = lp_benchmark(j, timeout=timeout, method="rotations-sb", solver_name=solver_name)
         times_SB_rotate.append(time)
 
         if time_over:
-            time_overs_SB_rotate.append(i - 1)
+            time_overs_SB_rotate.append(j - 1)
 
     X = range(1, instances_to_solve + 1)
     X_axis = np.arange(0, len(times_SB) * 2, 2)
@@ -315,30 +327,30 @@ def plot_LP_benchmark(instances_to_solve, solver_name, timeout=300, plot=False):
     # base
     barbase = plt.bar(X_axis - 0.6, times_base, 0.4, label='Base time')
 
-    for i in time_overs_base:
-        barbase[i].set_alpha(0.25)
+    for j in time_overs_base:
+        barbase[j].set_alpha(0.25)
 
     # base + rotation
     barbaserotation = plt.bar(X_axis - 0.2, times_base_rotate, 0.4, label='Rotated time')
 
-    for i in time_overs_base_rotate:
-        barbaserotation[i].set_alpha(0.25)
+    for j in time_overs_base_rotate:
+        barbaserotation[j].set_alpha(0.25)
 
     # SB
     barSB = plt.bar(X_axis + 0.2, times_SB, 0.4, label='Base SB time')
 
-    for i in time_overs_SB:
-        barSB[i].set_alpha(0.25)
+    for j in time_overs_SB:
+        barSB[j].set_alpha(0.25)
 
     # SB + rotation
     barSBrotation = plt.bar(X_axis + 0.6, times_SB_rotate, 0.4, label='Rotated + SB time')
 
-    for i in time_overs_SB_rotate:
-        barSBrotation[i].set_alpha(0.25)
+    for j in time_overs_SB_rotate:
+        barSBrotation[j].set_alpha(0.25)
 
     plt.xlabel("VLSI_Instance files")
     plt.ylabel("Time(s)")
-    plt.title("VLSI LP Benchmark"+ "solver: " + solver_name)
+    plt.title("VLSI LP Benchmark" + "solver: " + solver_name)
     plt.grid()
     plt.axhline(y=timeout, xmin=0, xmax=1, color='r', linestyle='-.', linewidth=2, label=f"time_limit = {timeout} s")
     plt.yscale("log")
@@ -359,7 +371,7 @@ def plot_LP_benchmark(instances_to_solve, solver_name, timeout=300, plot=False):
         file.close()
 
 
-for i in range (1, 41):
+for i in range(1, 41):
     lp_benchmark(i, 300, "base-sb", "gurobi")
 # timeout is set in seconds
-#plot_LP_benchmark(instances_to_solve=5, solver_name="gurobi", timeout=300, plot=False)
+# plot_LP_benchmark(instances_to_solve=5, solver_name="gurobi", timeout=300, plot=False)

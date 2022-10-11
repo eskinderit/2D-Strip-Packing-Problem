@@ -129,12 +129,12 @@ def lp_benchmark(start, end, timeout, verbose = True):
     timeout_ = timedelta(seconds=timeout)
 
     for j in range(start,end+1):
-        url = f"instances/ins-{j}.txt"
+        url = f"../../instances/ins-{j}.txt"
         lp_instance = LP_Instance(url)
         width, height = lp_instance.get_width_height()
 
         # Load n-Queens model from file
-        model = Model("./LP_mbm.mzn")
+        model = Model("./LP_alt_sb.mzn")
 
         # Find the MiniZinc solver configuration for Gecode
         solver = Solver.lookup("gurobi")
@@ -180,5 +180,5 @@ def lp_benchmark(start, end, timeout, verbose = True):
     #return solve_time, overtime
 
 
-lp_benchmark(29, 40, 300)
+lp_benchmark(1, 1, 300)
 
