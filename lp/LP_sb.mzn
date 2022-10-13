@@ -46,9 +46,9 @@ constraint forall(i in 1..n_rectangles, j in 1..i-1)(rect_y[j] + rect_height[j] 
 % sum delta[i,j,k]=1 on k in [1,4]
 constraint forall(i in 1..n_rectangles, j in 1..i-1)(delta[i,j,1] + delta[i,j,2] + delta[j,i,1] + delta[j,i,2] <= 3);
 
-% symmetry breaking for diagonal elements of dummy variables
-constraint forall(i in RECTANGLES)(delta[i,i,1] = 1);
-constraint forall(i in RECTANGLES)(delta[i,i,2] = 1);
+% symmetry breaking for diagonal elements of dummy variables - this just reduces feasible region, maybe not so smart
+%constraint forall(i in RECTANGLES)(delta[i,i,1] = 1);
+%constraint forall(i in RECTANGLES)(delta[i,i,2] = 1);
 
 % symmetry breaking for rectangles that are such that width[i]+width[j] > W
 constraint forall(i in LARGE_RECTANGLES)( delta[large_rectangles[i,1],large_rectangles[i,2],1] = 1 );

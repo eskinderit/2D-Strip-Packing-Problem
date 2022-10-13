@@ -38,17 +38,17 @@ constraint forall(i in RECTANGLES)( rect_y[i] >= 0);
 constraint forall(i in RECTANGLES)( rect_x[i] >= 0);
 
 % constraints for non-overlapping
-constraint forall(i in 1..n_rectangles, j in 1..i-1)(rect_x[i] + rect_new_width[i] - rect_x[j] - (W*delta[i,j,1]) <= 0);
-constraint forall(i in 1..n_rectangles, j in 1..i-1)(rect_x[j] + rect_new_width[j] - rect_x[i] - (W*delta[j,i,1]) <= 0);
-constraint forall(i in 1..n_rectangles, j in 1..i-1)(rect_y[i] + rect_new_height[i] - rect_y[j] - (H*delta[i,j,2]) <= 0);
-constraint forall(i in 1..n_rectangles, j in 1..i-1)(rect_y[j] + rect_new_height[j] - rect_y[i] - (H*delta[j,i,2]) <= 0);
+constraint forall(i in RECTANGLES, j in 1..i-1)(rect_x[i] + rect_new_width[i] - rect_x[j] - (W*delta[i,j,1]) <= 0);
+constraint forall(i in RECTANGLES, j in 1..i-1)(rect_x[j] + rect_new_width[j] - rect_x[i] - (W*delta[j,i,1]) <= 0);
+constraint forall(i in RECTANGLES, j in 1..i-1)(rect_y[i] + rect_new_height[i] - rect_y[j] - (H*delta[i,j,2]) <= 0);
+constraint forall(i in RECTANGLES, j in 1..i-1)(rect_y[j] + rect_new_height[j] - rect_y[i] - (H*delta[j,i,2]) <= 0);
 
 % constraints that ensures that at least one of the previous condition (in a logical OR) is satisfied
-constraint forall(i in 1..n_rectangles, j in 1..i-1)(delta[i,j,1] + delta[i,j,2] + delta[j,i,1] + delta[j,i,2] <= 3);
+constraint forall(i in RECTANGLES, j in 1..i-1)(delta[i,j,1] + delta[i,j,2] + delta[j,i,1] + delta[j,i,2] <= 3);
 
 % constraints to define the possibility of rotations
-constraint forall(i in 1..n_rectangles)(rect_new_width[i] = rotated[i]*rect_height[i] + (1 - rotated[i])*rect_width[i]);
-constraint forall(i in 1..n_rectangles)(rect_new_height[i] = rotated[i]*rect_width[i] + (1 - rotated[i])*rect_height[i]); 
+constraint forall(i in RECTANGLES)(rect_new_width[i] = rotated[i]*rect_height[i] + (1 - rotated[i])*rect_width[i]);
+constraint forall(i in RECTANGLES)(rect_new_height[i] = rotated[i]*rect_width[i] + (1 - rotated[i])*rect_height[i]); 
 
 % symmetry breaking to avoid rotation of squares
 constraint forall(i in SQUARES)(rotated[square_index[i]] = 0);
