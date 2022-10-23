@@ -228,7 +228,7 @@ def lp_benchmark(index, timeout, method, solver_name, verbose=True, plot=True):
 
     time_over = False
 
-    if round(solve_time + 0.6, 0) >= timeout:
+    if round(solve_time + 0.6, 0) >= timeout or (result.solution is None):
         time_over = True
         solve_time = 301
         if verbose:
@@ -237,31 +237,26 @@ def lp_benchmark(index, timeout, method, solver_name, verbose=True, plot=True):
         if verbose:
             print(f"Instance {index} solved in ", solve_time)
 
-    if (result.solution.rect_x is not None) and plot:
-        # plot results
-        x_pos = result.solution.rect_x
-        y_pos = result.solution.rect_y
-        H = result.solution.H
+        if plot:
+            # plot results
+            x_pos = result.solution.rect_x
+            y_pos = result.solution.rect_y
+            H = result.solution.H
 
-        if method == "rotations" or method == "rotations-sb":
-            rotated = result.solution.rotated
+            if method == "rotations" or method == "rotations-sb":
+                rotated = result.solution.rotated
+                for i in range(0, lp_instance.n_instances):
+                    if rotated[i] == 1:
+                        new_width = lp_instance.rectangles[i].height
+                        new_height = lp_instance.rectangles[i].width
+                        lp_instance.rectangles[i].width = new_width
+                        lp_instance.rectangles[i].height = new_height
+
             for i in range(0, lp_instance.n_instances):
-                if rotated[i] == 1:
-                    new_width = lp_instance.rectangles[i].height
-                    new_height = lp_instance.rectangles[i].width
-                    lp_instance.rectangles[i].width = new_width
-                    lp_instance.rectangles[i].height = new_height
-
-        for i in range(0, lp_instance.n_instances):
-            lp_instance.rectangles[i].x = x_pos[i]
-            lp_instance.rectangles[i].y = y_pos[i]
-            lp_instance.H = H
-        plot_rectangles(lp_instance.rectangles, url)
-
-    elif verbose:
-        solve_time = 301
-        time_over = True
-        print("solution not found")
+                lp_instance.rectangles[i].x = x_pos[i]
+                lp_instance.rectangles[i].y = y_pos[i]
+                lp_instance.H = H
+            plot_rectangles(lp_instance.rectangles, url)
 
     path = method + "/" + solver_name
     write_log(path="../out/lp/" + path + "/" + file, instance=lp_instance,
@@ -355,7 +350,7 @@ def plot_LP_benchmark(instances_to_solve, solver_name, timeout=300, plot=False):
     plt.axhline(y=timeout, xmin=0, xmax=1, color='r', linestyle='-.', linewidth=2, label=f"time_limit = {timeout} s")
     plt.yscale("log")
     plt.legend()
-    plt.savefig('lp_benchmark.png', transparent=False, format="png")
+    plt.savefig(f'lp_benchmark_{solver_name}.png', transparent=False, format="png")
     plt.show()
 
     out_text = f"total Base time        -- mean: {np.mean(times_base)} std: {np.std(times_base)}\n"
@@ -365,13 +360,13 @@ def plot_LP_benchmark(instances_to_solve, solver_name, timeout=300, plot=False):
 
     print(out_text)
     # write txt log
-    with open("lp_benchmark_log.txt", "w") as file:
+    with open(f"lp_benchmark_log_{solver_name}.txt", "w") as file:
         content = out_text
         file.writelines(content)
         file.close()
 
 
-for i in range(1, 5):
-    lp_benchmark(i, 300, "base-sb", "gurobi")
+# for i in range(1, 5):
+#   lp_benchmark(i, 300, "base-sb", "gurobi")
 # timeout is set in seconds
-# plot_LP_benchmark(instances_to_solve=5, solver_name="gurobi", timeout=300, plot=False)
+plot_LP_benchmark(instances_to_solve=40, solver_name="gurobi", timeout=300, plot=False)

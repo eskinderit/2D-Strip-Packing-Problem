@@ -3,7 +3,7 @@ int: h_ub;
 int: h_lb;
 int: W;
 int: n_rectangles;
-int: biggest_rect;
+
 
 % ranges for loops
 set of int: RECTANGLES = 1..n_rectangles;
