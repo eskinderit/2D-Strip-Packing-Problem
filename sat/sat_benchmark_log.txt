@@ -1,8 +1,8 @@
-total Base time        -- mean: 1.081478214263916 std: 0.8467430806760866 
-total rotated time     -- mean: 1.644437599182129 std: 0.6686606652057238 
-total SB time          -- mean: 0.4971293926239014 std: 0.21228371840776075 
-total rotated + SB time-- mean: 1.7622640609741211 std: 1.135144854773966 
-z3 Base time           -- mean: 0.0466 std: 0.03500057142390678 
-z3 rotated time        -- mean: 0.0396 std: 0.00711617874986288 
-z3 SB time             -- mean: 0.0248 std: 0.00348711915483254 
-z3 rotated + SB time   -- mean: 0.039 std: 0.013206059215375343
+total Base time        -- mean: 84.05892421007157 std: 213.00970281590347 
+total rotated time     -- mean: 228.47448337078094 std: 534.0534764266798 
+total SB time          -- mean: 73.30091633796692 std: 198.6454423268334 
+total rotated + SB time-- mean: 214.42832576036454 std: 528.3730910698112 
+z3 Base time           -- mean: 36.433525 std: 91.87860983275364 
+z3 rotated time        -- mean: 88.93515 std: 135.67435828474552 
+z3 SB time             -- mean: 26.50365 std: 73.02180425275384 
+z3 rotated + SB time   -- mean: 80.1276 std: 136.38829499223897

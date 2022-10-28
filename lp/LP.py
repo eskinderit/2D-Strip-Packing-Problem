@@ -365,7 +365,7 @@ def plot_LP_benchmark(instances_to_solve, solver_name, timeout=300, plot=False):
         file.writelines(content)
         file.close()
 
-    
+
 # for i in range(1, 5):
 #   lp_benchmark(i, 300, "base-sb", "gurobi")
 # timeout is set in seconds
