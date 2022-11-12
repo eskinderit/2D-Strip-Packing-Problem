@@ -1,0 +1,33 @@
+30 None
+28
+9 24 None None
+9 8 None None
+9 11 None None
+9 17 None None
+4 24 None None
+4 8 None None
+1 6 None None
+1 5 None None
+4 17 None None
+3 6 None None
+3 5 None None
+12 5 None None
+12 13 None None
+14 14 None None
+2 14 None None
+2 2 None None
+8 3 None None
+8 9 None None
+12 14 None None
+12 2 None None
+6 3 None None
+6 9 None None
+2 5 None None
+2 13 None None
+3 18 None None
+3 14 None None
+3 16 None None
+3 12 None None
+
+301
+True

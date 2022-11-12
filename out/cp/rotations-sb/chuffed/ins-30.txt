@@ -1,0 +1,32 @@
+37 None
+27
+3 3 None None
+3 4 None None
+3 5 None None
+3 6 None None
+3 7 None None
+3 8 None None
+3 9 None None
+3 11 None None
+3 12 None None
+3 13 None None
+3 14 None None
+3 17 None None
+3 18 None None
+3 21 None None
+4 3 None None
+4 4 None None
+4 5 None None
+4 6 None None
+4 10 None None
+4 22 None None
+4 24 None None
+5 3 None None
+5 4 None None
+5 6 None None
+5 10 None None
+5 14 None None
+12 37 None None
+
+301
+True
