@@ -1,5 +1,13 @@
 32 None
 27
+4 3 None None
+4 4 None None
+4 5 None None
+4 6 None None
+4 7 None None
+4 10 None None
+4 11 None None
+4 18 None None
 3 3 None None
 3 4 None None
 3 5 None None
@@ -19,14 +27,6 @@
 3 24 None None
 3 25 None None
 3 27 None None
-4 3 None None
-4 4 None None
-4 5 None None
-4 6 None None
-4 7 None None
-4 10 None None
-4 11 None None
-4 18 None None
 
 301
 True

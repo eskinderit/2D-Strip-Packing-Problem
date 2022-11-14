@@ -14,18 +14,24 @@ int: h_lb = (sum(k in COMPONENTS)(widths[k] * heights[k])) div fixed_width;
 var h_lb..h_ub: height;
 
 array[COMPONENTS] of var 0..fixed_width-min(widths): x_coords; % lower left corner x coordinates
-array[COMPONENTS] of var 0..2*max(h_lb,max(heights))-min(heights): y_coords; % lower left corner y coordinates
+array[COMPONENTS] of var 0..h_ub-min(heights): y_coords; % lower left corner y coordinates
 
 
 %-----------------------------------CONSTRAINTS
 constraint diffn(x_coords, y_coords, widths, heights);
 constraint cumulative(y_coords, heights, [widths[j] | j in COMPONENTS], fixed_width);
-constraint max(i in 1..n_components)(x_coords[i] + widths[i])<=fixed_width;
-constraint max(i in 1..n_components)(y_coords[i] + heights[i])<=height;
+constraint forall(i in 1..n_components)((x_coords[i] + widths[i])<=fixed_width);
+constraint forall(i in 1..n_components)((y_coords[i] + heights[i])<=height);
 %-----------------------------------
 
+array [1..2* n_components ] of var int: coords_couples = [if ( i mod 2 = 0) then
+      x_coords [ (i div 2)] else y_coords[((i+1) div 2)] endif | i in 1..2* n_components ];
+
 solve :: seq_search([
-int_search(y_coords, first_fail, indomain_min),
-int_search(x_coords, first_fail, indomain_min),
-int_search([height], smallest, indomain_min)])
+% we first try increasing values for height
+int_search([height], input_order, indomain_min),
+% in sequence, we try (x,y) coordinates choosing y and then x of the corresponding rectangle
+int_search (coords_couples , input_order , indomain_min)
+])
+
 minimize height;

@@ -1,8 +1,8 @@
 
 import sys
-
 import minizinc
 from minizinc import Instance, Model, Solver
+import gc
 
 sys.path.append('../')
 from utils.utils import *
@@ -33,8 +33,11 @@ class LP_Instance:
         self.W = int(file[0])
         self.H = None
         self.n_instances = int(file[1])
-        self.rectangles = rectangles
+        # in this modified version of BULJ the rectangles are sorted by decreasing width
 
+        rectangles = sorted(rectangles, key=lambda x: x.width, reverse=True)
+
+        self.rectangles = rectangles
         for j in range(0, len(self.rectangles)):
             if self.rectangles[j].width > self.W:
                 raise Exception(f"The width of the rectangle n.{j} is over the container width W = {self.W}")
@@ -46,11 +49,50 @@ class LP_Instance:
 
         """
 
-        height = 0
+        area = 0
 
         for rectangle in self.rectangles:
-            height += (rectangle.height * rectangle.width)
-        return int(np.ceil(height / self.W))
+            area += (rectangle.height * rectangle.width)
+        return int(np.ceil(area / self.W))
+
+    def H_UB_BLJ(self, plot=False):
+        '''
+        In this implementation, the upper bound is computed building a first
+        relaxed version of the problem: the rectangles are placed one to the right
+        of another in a line starting from the bottom left corner and when the next
+        rectangle is wider than the available width on the actual line, it is placed
+        on a new row, over the row of the previously placed rectangles.
+        H_UB is computed quickly and provides a bound which is way better than H_UB_naive.
+        (this advantage is more evident with instances having many rectangles).
+
+        '''
+
+        W = self.W
+        occupied_height = np.full((300, W), False)
+
+        for r in self.rectangles:
+
+            i = -1
+            hole_found = False
+            while not hole_found:
+                i += 1
+                j = -1
+                while (not hole_found) and (j < occupied_height.shape[1]-r.width):
+                    j += 1
+                    if np.all(occupied_height[i:i + r.height, j:j + r.width] == False):
+                        occupied_height[i:i + r.height, j:j + r.width] = True
+                        hole_found = True
+                        r.x = j
+                        r.y = i
+
+        if plot:
+            plot_rectangles(self.rectangles, title=self.name)
+
+
+        del occupied_height
+        gc.collect()
+
+        return max([(r.height + r.y) for r in self.rectangles])
 
     def H_UB(self, plot=False):
         '''
@@ -61,7 +103,6 @@ class LP_Instance:
         on a new row, over the row of the previously placed rectangles.
         H_UB is computed quickly and provides a bound which is way better than H_UB_naive.
         (this advantage is more evident with instances having many rectangles).
-
         '''
 
         W = self.W
@@ -197,15 +238,6 @@ def cp_benchmark(index, timeout, method, solver_name, verbose=True, plot=True):
     # Create an Instance of the 2d-strip-packaging model
     mzn_instance = Instance(solver, model)
 
-    if method == "rotations-sb":
-        squares = lp_instance.get_squares_index()
-        mzn_instance["n_squares"] = len(squares)
-        mzn_instance["square_index"] = squares
-
-    if method == "base-sb":
-        biggest_rectangle, _ = lp_instance.biggest_rectangle_index()
-        mzn_instance["biggest_rect"] = biggest_rectangle
-
     mzn_instance["h_ub"] = lp_instance.H_UB()
     mzn_instance["fixed_width"] = lp_instance.W
     mzn_instance["n_components"] = lp_instance.n_instances
@@ -268,7 +300,7 @@ def cp_benchmark(index, timeout, method, solver_name, verbose=True, plot=True):
 
 def plot_CP_benchmark(instances_to_solve, solver_name, timeout=300, plot=False):
     """
-    Produces the barplot with all the LP solving mechanisms (base, rotations,
+    Produces the barplot with all the CP solving mechanisms (base, rotations,
     base + symmetry breaking, rotations + symmetry breaking). Also produces a
     file with initial values + final positioning coordinates and total height.
     In the same folder an output with the resulting time statistics is produced.
@@ -367,8 +399,9 @@ def plot_CP_benchmark(instances_to_solve, solver_name, timeout=300, plot=False):
         file.writelines(content)
         file.close()
 
+#cp_benchmark(20, 300, "rotations", "chuffed", verbose=True, plot=True)
 
-#for i in range(1, 41):
-#    cp_benchmark(i, 300, "base", "chuffed", verbose=True, plot=True)
+#for i in range(5, 6):
+#    cp_benchmark(i, 300, "base-sb", "chuffed", verbose=True, plot=True)
 
 plot_CP_benchmark(40, "chuffed", timeout=300, plot=False)

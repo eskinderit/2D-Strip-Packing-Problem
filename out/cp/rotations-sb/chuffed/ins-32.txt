@@ -1,5 +1,24 @@
 39 None
 29
+15 39 None None
+5 3 None None
+5 4 None None
+5 5 None None
+5 6 None None
+5 8 None None
+5 10 None None
+5 11 None None
+5 13 None None
+5 18 None None
+4 3 None None
+4 4 None None
+4 5 None None
+4 6 None None
+4 8 None None
+4 9 None None
+4 12 None None
+4 15 None None
+4 16 None None
 3 3 None None
 3 4 None None
 3 5 None None
@@ -10,25 +29,6 @@
 3 10 None None
 3 11 None None
 3 15 None None
-4 3 None None
-4 4 None None
-4 5 None None
-4 6 None None
-4 8 None None
-4 9 None None
-4 12 None None
-4 15 None None
-4 16 None None
-5 3 None None
-5 4 None None
-5 5 None None
-5 6 None None
-5 8 None None
-5 10 None None
-5 11 None None
-5 13 None None
-5 18 None None
-15 39 None None
 
 301
 True

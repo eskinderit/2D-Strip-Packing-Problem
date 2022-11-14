@@ -24,6 +24,9 @@ class Rectangle:
     def is_square(self):
         return self.height == self.width
 
+    def get_width(self):
+        return self.width
+
 
 def plot_rectangles(rectangles, title="", indexes=True):
     """

@@ -18,8 +18,8 @@ var h_lb..h_ub: height;
 
 % Defining variables
 
-array[COMPONENTS] of var 0..fixed_width-min(min(heights),min(widths)): x_coords; % lower left corner x coordinates
-array[COMPONENTS] of var 0..2*max(h_lb,max(heights))-min(min(heights),min(widths)): y_coords;
+array[COMPONENTS] of var 0..fixed_width-max(min(heights),min(widths)): x_coords; % lower left corner x coordinates
+array[COMPONENTS] of var 0..h_ub-max(min(heights),min(widths)): y_coords;
 
 
 %-----------------------------------CONSTRAINTS
@@ -34,8 +34,8 @@ constraint forall(i in COMPONENTS)
 %-----------------------------------
 
 solve :: seq_search([
+int_search([height], smallest, indomain_min),
 int_search(y_coords, first_fail, indomain_min),
 int_search(x_coords, first_fail, indomain_min),
-int_search([height], smallest, indomain_min),
 int_search(rot, smallest, indomain_min, complete)])
 minimize height;
