@@ -8,162 +8,6 @@ from datetime import timedelta
 from tqdm import tqdm
 
 
-class LP_Instance:
-    """
-    In this implementation, VLSI_Instance is the class representing the parsed instance to be solved (with a
-    fixed width of the container and with a defined amount of rectangles to be placed inside that one)
-
-    path: the path from which the instances are taken
-
-    """
-
-    def __init__(self, path):
-
-        rectangles = []
-
-        with open(path, 'r') as file:
-            file = file.readlines()
-
-            for j in range(2, int(file[1]) + 2):
-                width, height = file[j].split()
-                rectangles.append(Rectangle(int(width), int(height)))
-
-        self.name = path
-        self.W = int(file[0])
-        self.H = None
-        self.n_instances = int(file[1])
-        self.rectangles = rectangles
-
-        for j in range(0, len(self.rectangles)):
-            if self.rectangles[j].width > self.W:
-                raise Exception(f"The width of the rectangle n.{j} is over the container width W = {self.W}")
-
-    def H_LB(self):
-        """
-        In this implementation, the lower bound is computed using as best case the one in which no
-        blank spaces are left
-
-        """
-
-        height = 0
-
-        for rectangle in self.rectangles:
-            height += (rectangle.height * rectangle.width)
-        return int(np.ceil(height / self.W))
-
-    def H_UB(self, plot=False):
-        '''
-        In this implementation, the upper bound is computed building a first
-        relaxed version of the problem: the rectangles are placed one to the right
-        of another in a line starting from the bottom left corner and when the next
-        rectangle is wider than the available width on the actual line, it is placed
-        on a new row, over the row of the previously placed rectangles.
-        H_UB is computed quickly and provides a bound which is way better than H_UB_naive.
-        (this advantage is more evident with instances having many rectangles).
-
-        '''
-
-        W = self.W
-        occupied_height = [0] * W
-
-        for r in self.rectangles:
-
-            occupied_height_copy = occupied_height.copy()
-            placer_x = np.argmin(occupied_height_copy)
-            placer_y = min(occupied_height_copy)
-
-            while ((placer_x + r.width) > W or any(
-                    [x > placer_y for x in occupied_height[placer_x:(placer_x + r.width)]])):
-                occupied_height_copy.remove(placer_y)
-                placer_x = np.argmin(occupied_height_copy)
-                placer_y = min(occupied_height_copy)
-
-            # lowest_height = max(occupied_height[placer_x:(placer_x + r.width)])
-
-            r.x = placer_x
-            r.y = placer_y
-
-            for i in range(placer_x, placer_x + r.width):
-                occupied_height[i] = placer_y + r.height
-
-            placer_x += r.width
-
-        if plot:
-            plot_rectangles(self.rectangles, title=self.name)
-
-        return max([(r.height + r.y) for r in self.rectangles])
-
-    def H_UB_naive(self):
-
-        height = 0
-
-        for rectangle in self.rectangles:
-            height += rectangle.height
-        return height
-
-    def H_UB_rotation(self):
-
-        height = 0
-
-        for rectangle in self.rectangles:
-            height += min(rectangle.height, rectangle.width)
-        return min(height, self.H_UB())
-
-    def biggest_rectangle_index(self):
-
-        biggest_rectangle_index = 0
-        smaller_rectangles = []
-
-        area = 0
-        for j in range(len(self.rectangles)):
-            a = self.rectangles[j].width * self.rectangles[j].height
-            if a > area:
-                area = a
-                biggest_rectangle_index = j + 1
-
-        for j in range(len(self.rectangles)):
-            if self.rectangles[j].width > (self.W - area) // 2:
-                smaller_rectangles.append(j + 1)
-
-        return biggest_rectangle_index, smaller_rectangles
-
-    def get_width_height(self):
-        widths = []
-        heights = []
-
-        for rect in self.rectangles:
-            widths.append(rect.width)
-            heights.append(rect.height)
-
-        return widths, heights
-
-    def get_large_rectangles_index(self):
-        large_rectangles = []
-        for i in range(0, len(self.rectangles) - 1):
-            for j in range(i + 1, len(self.rectangles)):
-                if self.rectangles[i].width + self.rectangles[j].width > self.W:
-                    large_rectangles.append([i + 1, j + 1])
-
-        return large_rectangles
-
-    def get_same_dim_rectangles_index(self):
-        same_dim_rectangles = []
-        for i in range(0, len(self.rectangles) - 1):
-            for j in range(i + 1, len(self.rectangles)):
-                if self.rectangles[i].width == self.rectangles[j].width and self.rectangles[i].height == \
-                        self.rectangles[j].height:
-                    same_dim_rectangles.append([i + 1, j + 1])
-
-        return same_dim_rectangles
-
-    def get_squares_index(self):
-        squares = []
-        for i in range(0, len(self.rectangles)):
-            if self.rectangles[i].is_square():
-                squares.append(i + 1)
-        return squares
-
-
 def lp_benchmark(index, timeout, method, solver_name, verbose=True, plot=True):
     """
     performs a benchmark in which instances having index from
@@ -175,7 +19,7 @@ def lp_benchmark(index, timeout, method, solver_name, verbose=True, plot=True):
     folder = "../instances/"
     file = f"ins-{index}.txt"
     url = folder + file
-    lp_instance = LP_Instance(url)
+    lp_instance = Minizinc_Instance(url)
     width, height = lp_instance.get_width_height()
 
     # Load 2d-strip-packaging model from file
@@ -264,7 +108,7 @@ def lp_benchmark(index, timeout, method, solver_name, verbose=True, plot=True):
     return solve_time, time_over
 
 
-def plot_LP_benchmark(instances_to_solve, solver_name, timeout=300, plot=False):
+def plot_LP_benchmark(instances_to_solve: int = 40, solver_name: str = "gurobi", timeout: int = 300, plot=False):
     """
     Produces the barplot with all the LP solving mechanisms (base, rotations,
     base + symmetry breaking, rotations + symmetry breaking). Also produces a
@@ -286,28 +130,28 @@ def plot_LP_benchmark(instances_to_solve, solver_name, timeout=300, plot=False):
     for j in tqdm(range(1, instances_to_solve + 1)):
 
         # base
-        time, time_over = lp_benchmark(j, timeout=timeout, method="base", solver_name=solver_name)
+        time, time_over = lp_benchmark(j, timeout=timeout, method="base", solver_name=solver_name, plot=plot)
         times_base.append(time)
 
         if time_over:
             time_overs_base.append(j - 1)
 
         # base + SB
-        time, time_over = lp_benchmark(j, timeout=timeout, method="base-sb", solver_name=solver_name)
+        time, time_over = lp_benchmark(j, timeout=timeout, method="base-sb", solver_name=solver_name, plot=plot)
         times_SB.append(time)
 
         if time_over:
             time_overs_SB.append(j - 1)
 
         # rotated
-        time, time_over = lp_benchmark(j, timeout=timeout, method="rotations", solver_name=solver_name)
+        time, time_over = lp_benchmark(j, timeout=timeout, method="rotations", solver_name=solver_name, plot=plot)
         times_base_rotate.append(time)
 
         if time_over:
             time_overs_base_rotate.append(j - 1)
 
         # rotated + SB
-        time, time_over = lp_benchmark(j, timeout=timeout, method="rotations-sb", solver_name=solver_name)
+        time, time_over = lp_benchmark(j, timeout=timeout, method="rotations-sb", solver_name=solver_name, plot=plot)
         times_SB_rotate.append(time)
 
         if time_over:
@@ -348,7 +192,7 @@ def plot_LP_benchmark(instances_to_solve, solver_name, timeout=300, plot=False):
     plt.title("VLSI LP Benchmark" + "solver: " + solver_name)
     plt.grid()
     plt.axhline(y=timeout, xmin=0, xmax=1, color='r', linestyle='-.', linewidth=2, label=f"time_limit = {timeout} s")
-    plt.yscale("log")
+    #plt.yscale("log")
     plt.legend()
     plt.savefig(f'lp_benchmark_{solver_name}.png', transparent=False, format="png")
     plt.show()
@@ -369,4 +213,4 @@ def plot_LP_benchmark(instances_to_solve, solver_name, timeout=300, plot=False):
 # for i in range(1, 5):
 #   lp_benchmark(i, 300, "base-sb", "gurobi")
 # timeout is set in seconds
-plot_LP_benchmark(instances_to_solve=40, solver_name="cplex", timeout=300, plot=False)
+plot_LP_benchmark(instances_to_solve=40, solver_name="cplex", timeout=300)

@@ -1,209 +1,11 @@
-
 import sys
 import minizinc
+from datetime import timedelta
+from tqdm import tqdm
 from minizinc import Instance, Model, Solver
-import gc
 
 sys.path.append('../')
 from utils.utils import *
-from datetime import timedelta
-from tqdm import tqdm
-
-class LP_Instance:
-    """
-    In this implementation, VLSI_Instance is the class representing the parsed instance to be solved (with a
-    fixed width of the container and with a defined amount of rectangles to be placed inside that one)
-
-    path: the path from which the instances are taken
-
-    """
-
-    def __init__(self, path):
-
-        rectangles = []
-
-        with open(path, 'r') as file:
-            file = file.readlines()
-
-            for j in range(2, int(file[1]) + 2):
-                width, height = file[j].split()
-                rectangles.append(Rectangle(int(width), int(height)))
-
-        self.name = path
-        self.W = int(file[0])
-        self.H = None
-        self.n_instances = int(file[1])
-        # in this modified version of BULJ the rectangles are sorted by decreasing width
-
-        rectangles = sorted(rectangles, key=lambda x: x.width, reverse=True)
-
-        self.rectangles = rectangles
-        for j in range(0, len(self.rectangles)):
-            if self.rectangles[j].width > self.W:
-                raise Exception(f"The width of the rectangle n.{j} is over the container width W = {self.W}")
-
-    def H_LB(self):
-        """
-        In this implementation, the lower bound is computed using as best case the one in which no
-        blank spaces are left
-
-        """
-
-        area = 0
-
-        for rectangle in self.rectangles:
-            area += (rectangle.height * rectangle.width)
-        return int(np.ceil(area / self.W))
-
-    def H_UB_BLJ(self, plot=False):
-        '''
-        In this implementation, the upper bound is computed building a first
-        relaxed version of the problem: the rectangles are placed one to the right
-        of another in a line starting from the bottom left corner and when the next
-        rectangle is wider than the available width on the actual line, it is placed
-        on a new row, over the row of the previously placed rectangles.
-        H_UB is computed quickly and provides a bound which is way better than H_UB_naive.
-        (this advantage is more evident with instances having many rectangles).
-
-        '''
-
-        W = self.W
-        occupied_height = np.full((300, W), False)
-
-        for r in self.rectangles:
-
-            i = -1
-            hole_found = False
-            while not hole_found:
-                i += 1
-                j = -1
-                while (not hole_found) and (j < occupied_height.shape[1]-r.width):
-                    j += 1
-                    if np.all(occupied_height[i:i + r.height, j:j + r.width] == False):
-                        occupied_height[i:i + r.height, j:j + r.width] = True
-                        hole_found = True
-                        r.x = j
-                        r.y = i
-
-        if plot:
-            plot_rectangles(self.rectangles, title=self.name)
-
-
-        del occupied_height
-        gc.collect()
-
-        return max([(r.height + r.y) for r in self.rectangles])
-
-    def H_UB(self, plot=False):
-        '''
-        In this implementation, the upper bound is computed building a first
-        relaxed version of the problem: the rectangles are placed one to the right
-        of another in a line starting from the bottom left corner and when the next
-        rectangle is wider than the available width on the actual line, it is placed
-        on a new row, over the row of the previously placed rectangles.
-        H_UB is computed quickly and provides a bound which is way better than H_UB_naive.
-        (this advantage is more evident with instances having many rectangles).
-        '''
-
-        W = self.W
-        occupied_height = [0] * W
-
-        for r in self.rectangles:
-
-            occupied_height_copy = occupied_height.copy()
-            placer_x = np.argmin(occupied_height_copy)
-            placer_y = min(occupied_height_copy)
-
-            while ((placer_x + r.width) > W or any(
-                    [x > placer_y for x in occupied_height[placer_x:(placer_x + r.width)]])):
-                occupied_height_copy.remove(placer_y)
-                placer_x = np.argmin(occupied_height_copy)
-                placer_y = min(occupied_height_copy)
-
-            # lowest_height = max(occupied_height[placer_x:(placer_x + r.width)])
-
-            r.x = placer_x
-            r.y = placer_y
-
-            for i in range(placer_x, placer_x + r.width):
-                occupied_height[i] = placer_y + r.height
-
-            placer_x += r.width
-
-        if plot:
-            plot_rectangles(self.rectangles, title=self.name)
-
-        return max([(r.height + r.y) for r in self.rectangles])
-
-    def H_UB_naive(self):
-
-        height = 0
-
-        for rectangle in self.rectangles:
-            height += rectangle.height
-        return height
-
-    def H_UB_rotation(self):
-
-        height = 0
-
-        for rectangle in self.rectangles:
-            height += min(rectangle.height, rectangle.width)
-        return min(height, self.H_UB())
-
-    def biggest_rectangle_index(self):
-
-        biggest_rectangle_index = 0
-        smaller_rectangles = []
-
-        area = 0
-        for j in range(len(self.rectangles)):
-            a = self.rectangles[j].width * self.rectangles[j].height
-            if a > area:
-                area = a
-                biggest_rectangle_index = j + 1
-
-        for j in range(len(self.rectangles)):
-            if self.rectangles[j].width > (self.W - area) // 2:
-                smaller_rectangles.append(j + 1)
-
-        return biggest_rectangle_index, smaller_rectangles
-
-    def get_width_height(self):
-        widths = []
-        heights = []
-
-        for rect in self.rectangles:
-            widths.append(rect.width)
-            heights.append(rect.height)
-
-        return widths, heights
-
-    def get_large_rectangles_index(self):
-        large_rectangles = []
-        for i in range(0, len(self.rectangles) - 1):
-            for j in range(i + 1, len(self.rectangles)):
-                if self.rectangles[i].width + self.rectangles[j].width > self.W:
-                    large_rectangles.append([i + 1, j + 1])
-
-        return large_rectangles
-
-    def get_same_dim_rectangles_index(self):
-        same_dim_rectangles = []
-        for i in range(0, len(self.rectangles) - 1):
-            for j in range(i + 1, len(self.rectangles)):
-                if self.rectangles[i].width == self.rectangles[j].width and self.rectangles[i].height == \
-                        self.rectangles[j].height:
-                    same_dim_rectangles.append([i + 1, j + 1])
-
-        return same_dim_rectangles
-
-    def get_squares_index(self):
-        squares = []
-        for i in range(0, len(self.rectangles)):
-            if self.rectangles[i].is_square():
-                squares.append(i + 1)
-        return squares
 
 
 def cp_benchmark(index, timeout, method, solver_name, verbose=True, plot=True):
@@ -217,8 +19,8 @@ def cp_benchmark(index, timeout, method, solver_name, verbose=True, plot=True):
     folder = "../instances/"
     file = f"ins-{index}.txt"
     url = folder + file
-    lp_instance = LP_Instance(url)
-    width, height = lp_instance.get_width_height()
+    cp_instance = Minizinc_Instance(url)
+    width, height = cp_instance.get_width_height()
 
     # Load 2d-strip-packaging model from file
     if method == "rotations":
@@ -238,9 +40,9 @@ def cp_benchmark(index, timeout, method, solver_name, verbose=True, plot=True):
     # Create an Instance of the 2d-strip-packaging model
     mzn_instance = Instance(solver, model)
 
-    mzn_instance["h_ub"] = lp_instance.H_UB()
-    mzn_instance["fixed_width"] = lp_instance.W
-    mzn_instance["n_components"] = lp_instance.n_instances
+    mzn_instance["h_ub"] = cp_instance.H_UB()
+    mzn_instance["fixed_width"] = cp_instance.W
+    mzn_instance["n_components"] = cp_instance.n_instances
     mzn_instance["heights"] = height
     mzn_instance["widths"] = width
 
@@ -271,34 +73,34 @@ def cp_benchmark(index, timeout, method, solver_name, verbose=True, plot=True):
 
                 if method == "rotations" or method == "rotations-sb":
                     rotated = result.solution.rot
-                    for i in range(0, lp_instance.n_instances):
+                    for i in range(0, cp_instance.n_instances):
                         if rotated[i] == 1:
-                            new_width = lp_instance.rectangles[i].height
-                            new_height = lp_instance.rectangles[i].width
-                            lp_instance.rectangles[i].width = new_width
-                            lp_instance.rectangles[i].height = new_height
+                            new_width = cp_instance.rectangles[i].height
+                            new_height = cp_instance.rectangles[i].width
+                            cp_instance.rectangles[i].width = new_width
+                            cp_instance.rectangles[i].height = new_height
 
-                for i in range(0, lp_instance.n_instances):
-                    lp_instance.rectangles[i].x = x_pos[i]
-                    lp_instance.rectangles[i].y = y_pos[i]
-                lp_instance.H = H
-                plot_rectangles(lp_instance.rectangles, url)
+                for i in range(0, cp_instance.n_instances):
+                    cp_instance.rectangles[i].x = x_pos[i]
+                    cp_instance.rectangles[i].y = y_pos[i]
+                cp_instance.H = H
+                plot_rectangles(cp_instance.rectangles, url)
     except minizinc.error.MiniZincError:
         print(f"Instance {index} not solved")
-        for i in range(0, lp_instance.n_instances):
-            lp_instance.rectangles[i].x = None
-            lp_instance.rectangles[i].y = None
-        lp_instance.H = None
+        for i in range(0, cp_instance.n_instances):
+            cp_instance.rectangles[i].x = None
+            cp_instance.rectangles[i].y = None
+        cp_instance.H = None
         solve_time = 301
         time_over = True
 
     path = method + "/" + solver_name
-    write_log(path="../out/cp/" + path + "/" + file, instance=lp_instance,
+    write_log(path="../out/cp/" + path + "/" + file, instance=cp_instance,
               add_text="\n" + str(solve_time) + "\n" + str(time_over))
     return solve_time, time_over
 
 
-def plot_CP_benchmark(instances_to_solve, solver_name, timeout=300, plot=False):
+def plot_CP_benchmark(instances_to_solve: int = 40, solver_name: str = "chuffed", timeout: int =300, plot=False):
     """
     Produces the barplot with all the CP solving mechanisms (base, rotations,
     base + symmetry breaking, rotations + symmetry breaking). Also produces a
@@ -382,7 +184,7 @@ def plot_CP_benchmark(instances_to_solve, solver_name, timeout=300, plot=False):
     plt.title("VLSI CP Benchmark" + "solver: " + solver_name)
     plt.grid()
     plt.axhline(y=timeout, xmin=0, xmax=1, color='r', linestyle='-.', linewidth=2, label=f"time_limit = {timeout} s")
-    plt.yscale("log")
+    #plt.yscale("log")
     plt.legend()
     plt.savefig(f'cp_benchmark_{solver_name}.png', transparent=False, format="png")
     plt.show()
@@ -399,9 +201,5 @@ def plot_CP_benchmark(instances_to_solve, solver_name, timeout=300, plot=False):
         file.writelines(content)
         file.close()
 
-#cp_benchmark(20, 300, "rotations", "chuffed", verbose=True, plot=True)
 
-#for i in range(5, 6):
-#    cp_benchmark(i, 300, "base-sb", "chuffed", verbose=True, plot=True)
-
-plot_CP_benchmark(40, "chuffed", timeout=300, plot=False)
+plot_CP_benchmark(instances_to_solve=40,  solver_name="chuffed", timeout=300)

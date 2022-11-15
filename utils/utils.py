@@ -1,5 +1,5 @@
 import re
-
+import gc
 import matplotlib.patches as patches
 import matplotlib.pyplot as plt
 import numpy as np
@@ -79,3 +79,200 @@ def write_log(path, instance, add_text=""):
     with open(path, "w") as file:
         file.writelines(out_text)
         file.close()
+
+
+class Minizinc_Instance:
+    """
+    In this implementation, VLSI_Instance is the class representing the parsed instance to be solved (with a
+    fixed width of the container and with a defined amount of rectangles to be placed inside that one)
+
+    path: the path from which the instances are taken
+
+    """
+
+    def __init__(self, path, order_by_width = True):
+
+        rectangles = []
+
+        with open(path, 'r') as file:
+            file = file.readlines()
+
+            for j in range(2, int(file[1]) + 2):
+                width, height = file[j].split()
+                rectangles.append(Rectangle(int(width), int(height)))
+
+        self.name = path
+        self.W = int(file[0])
+        self.H = None
+        self.n_instances = int(file[1])
+
+        if order_by_width:
+            rectangles = sorted(rectangles, key=lambda x: x.width, reverse=True)
+
+        self.rectangles = rectangles
+        for j in range(0, len(self.rectangles)):
+            if self.rectangles[j].width > self.W:
+                raise Exception(f"The width of the rectangle n.{j} is over the container width W = {self.W}")
+
+    def H_LB(self):
+        """
+        *Height Lower Bound*
+        In this implementation, the lower bound is computed using as best case the one in which no
+        blank spaces are left, so H = Atot/W
+        """
+
+        area = 0
+
+        for rectangle in self.rectangles:
+            area += (rectangle.height * rectangle.width)
+        return int(np.ceil(area / self.W))
+
+    def H_UB_BL(self, plot=False):
+        '''
+        *Bottom-Left-Justified Height Upper Bound*:
+        In this implementation, the rectangles are placed one by one in the first available
+        spot from left to right.
+        Although its good Upper Bound estimate, it's slower than other methods and must be
+        used just if the solver is very sensible to the Upper Bound setting.
+        '''
+
+        W = self.W
+        occupied_height = np.full((self.H_UB_naive(), W), False)
+
+        for r in self.rectangles:
+
+            i = -1
+            hole_found = False
+            while not hole_found:
+                i += 1
+                j = -1
+                while (not hole_found) and (j < occupied_height.shape[1]-r.width):
+                    j += 1
+                    if np.all(occupied_height[i:i + r.height, j:j + r.width] == False):
+                        occupied_height[i:i + r.height, j:j + r.width] = True
+                        hole_found = True
+                        r.x = j
+                        r.y = i
+
+        if plot:
+            plot_rectangles(self.rectangles, title=self.name)
+
+        del occupied_height
+        gc.collect()
+
+        return max([(r.height + r.y) for r in self.rectangles])
+
+    def H_UB(self, plot=False):
+        """
+        *Raw version of H_UB_BL Height Upperbound*
+        In this implementation, the upper bound is computed placing the rectangles
+        one after the other from bottom to top, from left to right.
+        Possible holes are left empty.
+        This solution is a good compromise between speed and quality of the bound computed.
+        """
+
+        W = self.W
+        occupied_height = [0] * W
+
+        for r in self.rectangles:
+
+            occupied_height_copy = occupied_height.copy()
+            placer_x = np.argmin(occupied_height_copy)
+            placer_y = min(occupied_height_copy)
+
+            while ((placer_x + r.width) > W or any(
+                    [x > placer_y for x in occupied_height[placer_x:(placer_x + r.width)]])):
+                occupied_height_copy.remove(placer_y)
+                placer_x = np.argmin(occupied_height_copy)
+                placer_y = min(occupied_height_copy)
+
+            # lowest_height = max(occupied_height[placer_x:(placer_x + r.width)])
+
+            r.x = placer_x
+            r.y = placer_y
+
+            for i in range(placer_x, placer_x + r.width):
+                occupied_height[i] = placer_y + r.height
+
+            placer_x += r.width
+
+        if plot:
+            plot_rectangles(self.rectangles, title=self.name)
+
+        return max([(r.height + r.y) for r in self.rectangles])
+
+    def H_UB_naive(self):
+        """
+        In this implementation, the upper bound is computed as the sum of all heights.
+        This method gives the quickest approximation, however the estimate is very raw.
+        Not recommended for solvers that are very sensible to Upper Bound values setting.
+        """
+
+        height = 0
+
+        for rectangle in self.rectangles:
+            height += rectangle.height
+        return height
+
+    def H_UB_rotation(self):
+
+        height = 0
+
+        for rectangle in self.rectangles:
+            height += min(rectangle.height, rectangle.width)
+        return min(height, self.H_UB())
+
+    def biggest_rectangle_index(self):
+
+        biggest_rectangle_index = 0
+        smaller_rectangles = []
+
+        area = 0
+        for j in range(len(self.rectangles)):
+            a = self.rectangles[j].width * self.rectangles[j].height
+            if a > area:
+                area = a
+                biggest_rectangle_index = j + 1
+
+        for j in range(len(self.rectangles)):
+            if self.rectangles[j].width > (self.W - area) // 2:
+                smaller_rectangles.append(j + 1)
+
+        return biggest_rectangle_index, smaller_rectangles
+
+    def get_width_height(self):
+        widths = []
+        heights = []
+
+        for rect in self.rectangles:
+            widths.append(rect.width)
+            heights.append(rect.height)
+
+        return widths, heights
+
+    def get_large_rectangles_index(self):
+        large_rectangles = []
+        for i in range(0, len(self.rectangles) - 1):
+            for j in range(i + 1, len(self.rectangles)):
+                if self.rectangles[i].width + self.rectangles[j].width > self.W:
+                    large_rectangles.append([i + 1, j + 1])
+
+        return large_rectangles
+
+    def get_same_dim_rectangles_index(self):
+        same_dim_rectangles = []
+        for i in range(0, len(self.rectangles) - 1):
+            for j in range(i + 1, len(self.rectangles)):
+                if self.rectangles[i].width == self.rectangles[j].width and self.rectangles[i].height == \
+                        self.rectangles[j].height:
+                    same_dim_rectangles.append([i + 1, j + 1])
+
+        return same_dim_rectangles
+
+    def get_squares_index(self):
+        squares = []
+        for i in range(0, len(self.rectangles)):
+            if self.rectangles[i].is_square():
+                squares.append(i + 1)
+        return squares
+
