@@ -81,7 +81,7 @@ def write_log(path, instance, add_text=""):
         file.close()
 
 
-class Minizinc_Instance:
+class VLSI_Instance:
     """
     In this implementation, VLSI_Instance is the class representing the parsed instance to be solved (with a
     fixed width of the container and with a defined amount of rectangles to be placed inside that one)

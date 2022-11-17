@@ -19,7 +19,7 @@ def lp_benchmark(index, timeout, method, solver_name, verbose=True, plot=True):
     folder = "../instances/"
     file = f"ins-{index}.txt"
     url = folder + file
-    lp_instance = Minizinc_Instance(path=url, order_by_width=True)
+    lp_instance = VLSI_Instance(path=url, order_by_width=True)
     width, height = lp_instance.get_width_height()
 
     # Load 2d-strip-packaging model from file
