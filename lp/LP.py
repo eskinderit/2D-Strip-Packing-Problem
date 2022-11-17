@@ -19,7 +19,7 @@ def lp_benchmark(index, timeout, method, solver_name, verbose=True, plot=True):
     folder = "../instances/"
     file = f"ins-{index}.txt"
     url = folder + file
-    lp_instance = Minizinc_Instance(url)
+    lp_instance = Minizinc_Instance(path=url, order_by_width=True)
     width, height = lp_instance.get_width_height()
 
     # Load 2d-strip-packaging model from file
@@ -40,10 +40,14 @@ def lp_benchmark(index, timeout, method, solver_name, verbose=True, plot=True):
     # Create an Instance of the 2d-strip-packaging model
     mzn_instance = Instance(solver, model)
 
+    if method =="rotations":
+        mzn_instance["biggest_dim"] = max(max(height), max(width))
     if method == "rotations-sb":
         squares = lp_instance.get_squares_index()
         mzn_instance["n_squares"] = len(squares)
         mzn_instance["square_index"] = squares
+        mzn_instance["biggest_dim"] = max(max(height), max(width))
+
 
     if method == "base-sb":
         large_rectangles = lp_instance.get_large_rectangles_index()
@@ -57,7 +61,7 @@ def lp_benchmark(index, timeout, method, solver_name, verbose=True, plot=True):
         mzn_instance["n_smaller_rectangles"] = len(smaller_rectangles)
         mzn_instance["smaller_rectangles"] = smaller_rectangles
 
-    mzn_instance["h_ub"] = lp_instance.H_UB()
+    mzn_instance["h_ub"] = lp_instance.H_UB_BL()
     mzn_instance["h_lb"] = lp_instance.H_LB()
     mzn_instance["W"] = lp_instance.W
     mzn_instance["n_rectangles"] = lp_instance.n_instances
@@ -65,7 +69,7 @@ def lp_benchmark(index, timeout, method, solver_name, verbose=True, plot=True):
     mzn_instance["rect_width"] = width
 
     # solve
-    result = mzn_instance.solve(timeout_)
+    result = mzn_instance.solve(timeout=timeout_, random_seed=8)
     if verbose:
         print(result)
     solve_time = result.statistics["solveTime"].total_seconds()
@@ -210,7 +214,7 @@ def plot_LP_benchmark(instances_to_solve: int = 40, solver_name: str = "gurobi",
         file.close()
 
 
-# for i in range(1, 5):
-#   lp_benchmark(i, 300, "base-sb", "gurobi")
+#for i in range(31, 40):
+#    lp_benchmark(i, 300, "base", "gurobi")
 # timeout is set in seconds
-plot_LP_benchmark(instances_to_solve=40, solver_name="cplex", timeout=300)
+plot_LP_benchmark(instances_to_solve=40, solver_name="gurobi", timeout=300, plot=True)

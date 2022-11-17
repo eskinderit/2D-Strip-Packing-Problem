@@ -106,8 +106,9 @@ class Minizinc_Instance:
         self.H = None
         self.n_instances = int(file[1])
 
+        # sort by width, area, height (in this order)
         if order_by_width:
-            rectangles = sorted(rectangles, key=lambda x: x.width, reverse=True)
+            rectangles = sorted(rectangles, key=lambda x: (x.width, x.width*x.height, x.height), reverse=True)
 
         self.rectangles = rectangles
         for j in range(0, len(self.rectangles)):

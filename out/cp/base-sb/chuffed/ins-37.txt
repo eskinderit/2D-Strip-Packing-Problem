@@ -1,33 +1,33 @@
 30 None
 28
-13 21 0 0
-11 7 13 0
-11 14 13 7
-11 17 0 21
-11 4 11 21
-8 14 22 21
-8 4 11 25
-7 6 11 29
-5 7 11 35
-5 14 16 35
-5 14 21 35
-5 4 0 38
-5 18 5 38
-5 3 0 42
-5 18 10 42
-5 21 0 45
-4 7 26 35
-4 5 15 49
-4 18 26 42
-4 3 19 49
-3 18 23 49
-3 21 19 52
-3 7 15 54
-3 5 5 56
-3 17 8 60
-3 4 11 60
-2 12 5 61
-2 6 0 66
+13 21 None None
+11 7 None None
+11 14 None None
+11 17 None None
+11 4 None None
+8 14 None None
+8 4 None None
+7 6 None None
+5 7 None None
+5 14 None None
+5 14 None None
+5 4 None None
+5 18 None None
+5 3 None None
+5 18 None None
+5 21 None None
+4 7 None None
+4 5 None None
+4 18 None None
+4 3 None None
+3 18 None None
+3 21 None None
+3 7 None None
+3 5 None None
+3 17 None None
+3 4 None None
+2 12 None None
+2 6 None None
 
-186.395
-False
+301
+True
