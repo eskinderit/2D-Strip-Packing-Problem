@@ -40,7 +40,7 @@ def cp_benchmark(index, timeout, method, solver_name, verbose=True, plot=True):
     # Create an Instance of the 2d-strip-packaging model
     mzn_instance = Instance(solver, model)
 
-    mzn_instance["h_ub"] = cp_instance.H_UB()
+    mzn_instance["h_ub"] = cp_instance.H_UB_BL()
     mzn_instance["fixed_width"] = cp_instance.W
     mzn_instance["n_components"] = cp_instance.n_instances
     mzn_instance["heights"] = height
