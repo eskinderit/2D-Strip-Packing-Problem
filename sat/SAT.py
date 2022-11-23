@@ -1,3 +1,4 @@
+#!pip install z3-solver
 import sys
 sys.path.append('../')
 from utils.utils import *
@@ -7,6 +8,23 @@ import numpy as np
 import matplotlib.pyplot as plt
 import time
 from tqdm import tqdm
+
+
+class VLSI_SAT_Instance(VLSI_Instance):
+    def load_sat_instance(self, H, rotate=False):
+        self.H = H
+        self.lr = [[Bool(f"lr_({i},{j})") for j in range(self.n_instances)] for i in range(self.n_instances)]
+        self.ud = [[Bool(f"ud_({i},{j})") for j in range(self.n_instances)] for i in range(self.n_instances)]
+        self.s = Solver()
+
+        if rotate:
+            self.r = [Bool(f"r_({i})") for i in range(self.n_instances)]
+            max_len = max(self.W, self.H)
+            self.enc_x = [[Bool(f"encx_({i},{j})") for j in range(max_len)] for i in range(self.n_instances)]
+            self.enc_y = [[Bool(f"ency_({i},{j})") for j in range(max_len)] for i in range(self.n_instances)]
+        else:
+            self.enc_x = [[Bool(f"encx_({i},{j})") for j in range(self.W)] for i in range(self.n_instances)]
+            self.enc_y = [[Bool(f"ency_({i},{j})") for j in range(self.H)] for i in range(self.n_instances)]
 
 
 def ordinalencoder(number, max_number):
@@ -330,7 +348,7 @@ class VLSI_SAT_solver:
 
         set_option(timeout=timeout * 1000)
 
-        instance = VLSI_Instance(instance_path)
+        instance = VLSI_SAT_Instance(instance_path)
         rectangles = instance.rectangles
 
         # setting Lower Bound and Upper Bound

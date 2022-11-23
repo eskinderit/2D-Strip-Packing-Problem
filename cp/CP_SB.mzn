@@ -32,11 +32,14 @@ constraint forall(i in 1..n_components)((y_coords[i] + heights[i])<=height);
 constraint symmetry_breaking_constraint(x_coords[biggest_rect] <= (fixed_width - widths[biggest_rect]) div 2 /\ 
                                         y_coords[biggest_rect] <= (height - heights[biggest_rect]) div 2 );
 
-/*
-constraint redundant_constraint(forall(i in SMALLER)(if (widths[i] > (fixed_width - widths[biggest_rect] div 2)) then 
-                                        abs(y_coords[i] - y_coords[biggest_rect]) >= min(heights[i], heights[biggest_rect])endif));
+
+constraint redundant_constraint(forall(i in SMALLER)(if (widths[i] > (fixed_width - widths[biggest_rect]) div 2) then
+                                                              not(x_coords[i] < x_coords[biggest_rect] /\
+                                                                  y_coords[i] < y_coords[biggest_rect]+heights[biggest_rect] /\
+                                                                  y_coords[i] + heights[i]>= y_coords[biggest_rect]
+                                                                  ) endif));
                  
-*/
+
 % SR - symmetry breaking for items of identical dimensions
 
 constraint symmetry_breaking_constraint(forall(i,j in COMPONENTS where j>i)

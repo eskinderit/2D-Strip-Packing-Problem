@@ -1,5 +1,3 @@
-#!pip install z3-solver
-from z3 import *
 import re
 import gc
 import matplotlib.patches as patches
@@ -163,7 +161,9 @@ class VLSI_Instance:
         del occupied_height
         gc.collect()
 
-        return max([(r.height + r.y) for r in self.rectangles])
+        self.H = max([(r.height + r.y) for r in self.rectangles])
+
+        return self.H
 
     def H_UB_naive(self, plot=False):
         """
@@ -233,7 +233,7 @@ class VLSI_Instance:
                 biggest_rectangle_index = j + 1
 
         for j in range(len(self.rectangles)):
-            if self.rectangles[j].width > (self.W - area) // 2:
+            if j != biggest_rectangle_index-1 and self.rectangles[j].width > (self.W - self.rectangles[biggest_rectangle_index-1].width) // 2:
                 smaller_rectangles.append(j + 1)
 
         return biggest_rectangle_index, smaller_rectangles
@@ -249,6 +249,11 @@ class VLSI_Instance:
         return widths, heights
 
     def get_large_rectangles_index(self):
+        """
+        returns the indexes of the rectangles whose width sum
+        gets over the width of the main plate,
+        using the first element as if it had index 1
+        """
         large_rectangles = []
         for i in range(0, len(self.rectangles) - 1):
             for j in range(i + 1, len(self.rectangles)):
@@ -258,6 +263,10 @@ class VLSI_Instance:
         return large_rectangles
 
     def get_same_dim_rectangles_index(self):
+        """
+        returns the indexes of the rectangles having same dimension,
+        using the first element as if it had index 1
+        """
         same_dim_rectangles = []
         for i in range(0, len(self.rectangles) - 1):
             for j in range(i + 1, len(self.rectangles)):
@@ -268,26 +277,12 @@ class VLSI_Instance:
         return same_dim_rectangles
 
     def get_squares_index(self):
+        """
+        returns the squares indexes, using the first element as
+        if it had index 1
+        """
         squares = []
         for i in range(0, len(self.rectangles)):
             if self.rectangles[i].is_square():
                 squares.append(i + 1)
         return squares
-
-    def load_sat_instance(self, H, rotate=False):
-        self.H = H
-        self.lr = [[Bool(f"lr_({i},{j})") for j in range(self.n_instances)] for i in range(self.n_instances)]
-        self.ud = [[Bool(f"ud_({i},{j})") for j in range(self.n_instances)] for i in range(self.n_instances)]
-        self.s = Solver()
-
-        if rotate:
-            self.r = [Bool(f"r_({i})") for i in range(self.n_instances)]
-            max_len = max(self.W, self.H)
-            self.enc_x = [[Bool(f"encx_({i},{j})") for j in range(max_len)] for i in range(self.n_instances)]
-            self.enc_y = [[Bool(f"ency_({i},{j})") for j in range(max_len)] for i in range(self.n_instances)]
-        else:
-            self.enc_x = [[Bool(f"encx_({i},{j})") for j in range(self.W)] for i in range(self.n_instances)]
-            self.enc_y = [[Bool(f"ency_({i},{j})") for j in range(self.H)] for i in range(self.n_instances)]
-            
-
-

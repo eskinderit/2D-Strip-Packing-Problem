@@ -107,7 +107,7 @@ def lp_benchmark(index, timeout, method, solver_name, verbose=True, plot=True):
             plot_rectangles(lp_instance.rectangles, url)
 
     path = method + "/" + solver_name
-    write_log(path="../out/lp/" + path + "/" + file, instance=lp_instance,
+    write_log(path="../lp-out-minizinc/" + path + "/" + file, instance=lp_instance,
               add_text="\n" + str(solve_time) + "\n" + str(time_over))
     return solve_time, time_over
 
