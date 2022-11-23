@@ -200,20 +200,20 @@ def lp_benchmark(index, timeout, method, solver_name, verbose=True, plot=True):
             if verbose:
                 print(f"Instance {index} solved in ", solve_time)
 
+        if method == "rotations" or method == "rotations-sb":
+            for i in range(0, lp_instance.n_instances):
+                if int(r[i].solution_value()) == 1:
+                    lp_instance.rectangles[i].width = height[i]
+                    lp_instance.rectangles[i].height = width[i]
+
+        for i in range(0, lp_instance.n_instances):
+            lp_instance.rectangles[i].x = int(x[i].solution_value())
+            lp_instance.rectangles[i].y = int(y[i].solution_value())
+
+        lp_instance.H = int(H.solution_value())
+
         if plot:
             # plot results
-
-            if method == "rotations" or method == "rotations-sb":
-                for i in range(0, lp_instance.n_instances):
-                    if int(r[i].solution_value()) == 1:
-                        lp_instance.rectangles[i].width = height[i]
-                        lp_instance.rectangles[i].height = width[i]
-
-            for i in range(0, lp_instance.n_instances):
-                lp_instance.rectangles[i].x = int(x[i].solution_value())
-                lp_instance.rectangles[i].y = int(y[i].solution_value())
-
-            lp_instance.H = int(H.solution_value())
             plot_rectangles(lp_instance.rectangles, url)
 
     path = method + "/" + solver_name

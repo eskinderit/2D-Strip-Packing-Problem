@@ -66,6 +66,7 @@ def cp_benchmark(index, timeout, method, solver_name, verbose=True, plot=True):
                 print(f"instance {index} not solved")
 
         else:
+
             if round(solve_time + 0.6, 0) >= timeout:
                 time_over = True
                 solution_found = "NOT_OPTIMAL"
@@ -78,26 +79,26 @@ def cp_benchmark(index, timeout, method, solver_name, verbose=True, plot=True):
                 if verbose:
                     print(f"Instance {index} solved in ", solve_time)
 
-            if plot:
-                # plot results
-                x_pos = result.solution.x_coords
-                y_pos = result.solution.y_coords
-                H = result.solution.height
+            cp_instance.H = result.solution.height
+            x_pos = result.solution.x_coords
+            y_pos = result.solution.y_coords
 
-                if method == "rotations" or method == "rotations-sb":
-                    rotated = result.solution.rot
-                    for i in range(0, cp_instance.n_instances):
-                        if rotated[i] == 1:
-                            new_width = cp_instance.rectangles[i].height
-                            new_height = cp_instance.rectangles[i].width
-                            cp_instance.rectangles[i].width = new_width
-                            cp_instance.rectangles[i].height = new_height
-
+            if method == "rotations" or method == "rotations-sb":
+                rotated = result.solution.rot
                 for i in range(0, cp_instance.n_instances):
-                    cp_instance.rectangles[i].x = x_pos[i]
-                    cp_instance.rectangles[i].y = y_pos[i]
-                cp_instance.H = H
+                    if rotated[i] == 1:
+                        new_width = cp_instance.rectangles[i].height
+                        new_height = cp_instance.rectangles[i].width
+                        cp_instance.rectangles[i].width = new_width
+                        cp_instance.rectangles[i].height = new_height
+
+            for i in range(0, cp_instance.n_instances):
+                cp_instance.rectangles[i].x = x_pos[i]
+                cp_instance.rectangles[i].y = y_pos[i]
+
+            if plot:
                 plot_rectangles(cp_instance.rectangles, url)
+
     except minizinc.error.MiniZincError:
         time_over = True
         solution_found = "UPPER_BOUND"
