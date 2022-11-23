@@ -46,6 +46,9 @@ def cp_benchmark(index, timeout, method, solver_name, verbose=True, plot=True):
     mzn_instance["heights"] = height
     mzn_instance["widths"] = width
 
+    time_over = None
+    solution_found = None
+
     try:
         # solve
         result = mzn_instance.solve(timeout=timeout_, random_seed=7, free_search=True)
@@ -54,16 +57,26 @@ def cp_benchmark(index, timeout, method, solver_name, verbose=True, plot=True):
             print(result)
         solve_time = result.statistics["solveTime"].total_seconds()
 
-        time_over = False
 
-        if round(solve_time + 0.6, 0) >= timeout or (result.solution is None):
+        if result.solution is None:
             time_over = True
-            solve_time = 301
+            solution_found = "UPPER_BOUND"
+            solve_time = timeout + 1
             if verbose:
-                print(f"instance {index} overtime")
+                print(f"instance {index} not solved")
+
         else:
-            if verbose:
-                print(f"Instance {index} solved in ", solve_time)
+            if round(solve_time + 0.6, 0) >= timeout:
+                time_over = True
+                solution_found = "NOT_OPTIMAL"
+                solve_time = timeout + 1
+                if verbose:
+                    print(f"instance {index} solved, but solution is not optimal")
+            else:
+                time_over = False
+                solution_found = "OPTIMAL"
+                if verbose:
+                    print(f"Instance {index} solved in ", solve_time)
 
             if plot:
                 # plot results
@@ -86,17 +99,15 @@ def cp_benchmark(index, timeout, method, solver_name, verbose=True, plot=True):
                 cp_instance.H = H
                 plot_rectangles(cp_instance.rectangles, url)
     except minizinc.error.MiniZincError:
-        print(f"Instance {index} not solved")
-        for i in range(0, cp_instance.n_instances):
-            cp_instance.rectangles[i].x = None
-            cp_instance.rectangles[i].y = None
-        cp_instance.H = None
-        solve_time = 301
         time_over = True
+        solution_found = "UPPER_BOUND"
+        solve_time = timeout + 1
+        if verbose:
+            print(f"instance {index} not solved")
 
     path = method + "/" + solver_name
     write_log(path="../out/cp/" + path + "/" + file, instance=cp_instance,
-              add_text="\n" + str(solve_time) + "\n" + str(time_over))
+              add_text="\n" + str(solve_time) + "\n" + str(time_over) + "\n" + solution_found)
     return solve_time, time_over
 
 

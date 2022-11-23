@@ -609,7 +609,7 @@ def plot_SAT_benchmark(instances_to_solve=5, timeout=300, plot=False, verbose=Fa
     out_text += f"z3 rotated + SB time   -- mean: {np.mean(z3_times_SB_rotate)} std: {np.std(z3_times_SB_rotate)}"
 
     # write txt log
-    with  open("sat_benchmark_log.txt", "w") as file:
+    with open("sat_benchmark_log.txt", "w") as file:
         content = out_text
         file.writelines(content)
         file.close()
