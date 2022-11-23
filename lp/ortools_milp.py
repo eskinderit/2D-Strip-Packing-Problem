@@ -181,7 +181,7 @@ def lp_benchmark(index, timeout, method, solver_name, verbose=True, plot=True):
     if status == pywraplp.Solver.NOT_SOLVED:
         time_over = True
         solution_found = "UPPER_BOUND"
-        solve_time = 301
+        solve_time = timeout+1
         if verbose:
             print(f"instance {index} not solved")
 
@@ -190,7 +190,7 @@ def lp_benchmark(index, timeout, method, solver_name, verbose=True, plot=True):
         if not(status == pywraplp.Solver.OPTIMAL) or (solve_time >= timeout):
             solution_found = "NOT_OPTIMAL"
             time_over = True
-            solve_time = 301
+            solve_time = timeout+1
             if verbose:
                 print(f"instance {index} solved, but solution is not optimal")
 
@@ -328,5 +328,5 @@ def plot_LP_benchmark(instances_to_solve: int = 40, solver_name: str = "gurobi",
 #    lp_benchmark(i, 300, "base-sb", "gurobi", verbose = False, plot=True)
 
 # timeout is set in seconds
-plot_LP_benchmark(instances_to_solve=20, solver_name="gurobi", timeout=300, plot=True)
+plot_LP_benchmark(instances_to_solve=40, solver_name="gurobi", timeout=300, plot=False)
 
