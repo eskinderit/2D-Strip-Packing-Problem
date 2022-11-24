@@ -214,4 +214,4 @@ def plot_CP_benchmark(instances_to_solve: int = 40, solver_name: str = "chuffed"
         file.close()
 
 
-plot_CP_benchmark(instances_to_solve=40,  solver_name="chuffed", timeout=300)
+plot_CP_benchmark(instances_to_solve=40,  solver_name="chuffed", timeout=300, plot=True)

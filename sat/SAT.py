@@ -342,7 +342,6 @@ class VLSI_SAT_solver:
         plot: True to print the graphic solution
         '''
 
-        total_time = 0
         time_over = False
         z3_total_time = 0
 
@@ -353,35 +352,37 @@ class VLSI_SAT_solver:
 
         # setting Lower Bound and Upper Bound
 
-        LB = instance.H_LB()
-        UB = 0
+        LB_init = instance.H_LB()
 
-        if (rotate):
-            UB = instance.H_UB_rotation()
+        if rotate:
+            UB_init = instance.H_UB_rotation()
         else:
-            UB = instance.H_UB_BL()
+            UB_init = instance.H_UB_BL()
 
-        if (verbose):
-            print("### Height LB: {}, Height UB: {}, N_rectangles: {} ###".format(LB, UB, instance.n_instances))
+        if verbose:
+            print("### Height LB: {}, Height UB: {}, N_rectangles: {} ###".format(LB_init, UB_init, instance.n_instances))
 
-        # using bisection method as search trategy
+        # using bisection method as search strategy
         start = time.time()
+        best_bound = False
+        solution_found = "UPPER_BOUND"
+        LB = LB_init
+        UB = UB_init
 
-        while LB <= UB:
+        # for "fairness", we launch the solver even if the LB has already reached the best bound
+        while LB <= UB and not best_bound:
 
             o = (LB + UB) // 2
             instance.load_sat_instance(H=o, rotate=rotate)
 
-            if (verbose):
+            if verbose:
                 print("Attempting Height = ", o)
 
             solved, timer = self.build_constraints_solve(instance, break_symmetries=break_symmetries, rotate=rotate)
             z3_total_time += timer
 
-            if (timer > timeout):
-                time_over = True
 
-            if (verbose):
+            if verbose:
                 print("Attempting Height = ", o, ", Elapsed time: ", timer)
 
             if solved:
@@ -395,88 +396,109 @@ class VLSI_SAT_solver:
                     print("success with Height = ", o)
 
                 if LB == UB:
-                    UB = -1
+                    best_bound = True
+                    time_over = False
+                    solution_found = "OPTIMAL"
+
+                else:
+                    time_over = False
+                    solution_found = "NOT_PROVEN_OPTIMAL"
 
             else:
-                LB = o + 1
-                if (verbose):
+                # if the solving process failed, the solve is attempted with
+                # the other bisection extreme
+
+                if verbose:
                     print("fail with Height = ", o)
+
+                # case in which the solver failed because the timeout was passed
+                if timer > timeout:
+                    time_over = True
+
+                # case in which the timeout was not passed,
+                # but the problem was not satisfiable with the selected height
+                else:
+                    time_over = False
+
+                    if LB == LB_init and UB == UB_init:
+                        best_bound = True
+
+                LB = o + 1
 
         end = time.time()
         rectangle_placements = []
 
-        for i in range(len(rectangles)):
+        # here we assign the new values of the solution just if the solver has found something
+        # different from the initially computed upper bound
+        if not(solution_found == "UPPER_BOUND"):
 
-            # inverting side measures for rotated rectangles
-            if (rotate):
-                if (model.__getitem__(instance.r[i])):
-                    w = rectangles[i].width
-                    h = rectangles[i].height
-                    rectangles[i].width = h
-                    rectangles[i].height = w
+            for i in range(len(rectangles)):
 
-            # assigning the computed left-bottom corner coordinates to rectangles
-            x = []
-            y = []
+                # inverting side measures for rotated rectangles
+                if rotate:
+                    if model.__getitem__(instance.r[i]):
+                        w = rectangles[i].width
+                        h = rectangles[i].height
+                        rectangles[i].width = h
+                        rectangles[i].height = w
 
-            for j in range(len(enc_x[i])):
-                x.append(model.__getitem__(enc_x[i][j]))
+                # assigning the computed left-bottom corner coordinates to rectangles
+                x = []
+                y = []
 
-            for j in range(len(enc_y[i])):
-                y.append(model.__getitem__(enc_y[i][j]))
+                for j in range(len(enc_x[i])):
+                    x.append(model.__getitem__(enc_x[i][j]))
 
-            rectangles[i].x = ordinaldecoder(x)
-            rectangles[i].y = ordinaldecoder(y)
+                for j in range(len(enc_y[i])):
+                    y.append(model.__getitem__(enc_y[i][j]))
 
-            rotated = "No"
+                rectangles[i].x = ordinaldecoder(x)
+                rectangles[i].y = ordinaldecoder(y)
 
-            if (rotate and model.__getitem__(instance.r[i])):
-                rotated = "Yes"
+                rotated = "No"
 
-            rectangle_placement = "coordinate for rectangle[{}]: (x: ,{}, y: {}), width: {}, height: {}, rotated: {} \n".format(
-                i, rectangles[i].x, rectangles[i].y, rectangles[i].width, rectangles[i].height, rotated)
+                if (rotate and model.__getitem__(instance.r[i])):
+                    rotated = "Yes"
 
-            # printing computed parameters
+                rectangle_placement = "coordinate for rectangle[{}]: (x: ,{}, y: {}), width: {}, height: {}, rotated: {} \n".format(
+                    i, rectangles[i].x, rectangles[i].y, rectangles[i].width, rectangles[i].height, rotated)
 
-            if (verbose):
-                print(rectangle_placement)
+                # printing computed parameters
 
-            rectangle_placements.append(rectangle_placement)
+                if (verbose):
+                    print(rectangle_placement)
+
+                rectangle_placements.append(rectangle_placement)
+
+            # computing the maximum height that succeeded
+            best_height = max([(r.y + r.height) for r in rectangles])
+
+            instance.H = best_height
 
         total_time = end - start
-
-        # computing the maximum height that succeeded
-        best_height = max([(r.y + r.height) for r in rectangles])
-
-        instance.H = best_height
 
         if plot:
             plot_rectangles(rectangles, title=instance.name)
 
         if verbose:
-            print(f"### Best height: {best_height}, Computation time: {total_time}s ###")
+            print(f"### Best height: {instance.H}, Computation time: {total_time}s ###")
 
         if log_txt:
             if rotate:
-
                 if break_symmetries:
                     path = "rotations-sb"
-
                 else:
                     path = "rotations"
-
             else:
-
                 if break_symmetries:
                     path = "base-sb"
-
                 else:
                     path = "base"
 
             title_log_txt = title = re.split("/", instance.name)[-1]
 
-        write_log(path="../out/sat/" + path + "/" + title_log_txt, instance=instance,
-                  add_text="\n" + str(total_time) + "\n" + str(time_over))
+            write_log(path="../out/sat/" + path + "/" + title_log_txt, instance=instance,
+                      add_text="\n" + str(total_time) + "\n" + str(time_over)+ "\n" + solution_found)
 
         return rectangles, best_height, total_time, time_over, z3_total_time
 
@@ -618,4 +640,4 @@ def plot_SAT_benchmark(instances_to_solve=5, timeout=300, plot=False, verbose=Fa
 
 
 # timeout is set in seconds
-plot_SAT_benchmark(instances_to_solve=40, timeout=300, plot=False)
+plot_SAT_benchmark(instances_to_solve=40, timeout=300, plot=True)
