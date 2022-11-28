@@ -3,6 +3,7 @@ import gc
 import matplotlib.patches as patches
 import matplotlib.pyplot as plt
 import numpy as np
+#import pandas as pd
 
 
 class Rectangle:
@@ -81,6 +82,38 @@ def write_log(path, instance, add_text=""):
         file.close()
 
 
+def plot_result(path):
+    rectangles = []
+
+    with open(path, 'r') as file:
+        file = file.readlines()
+
+        for j in range(2, int(file[1]) + 2):
+            width, height, x, y = file[j].split()
+            rectangles.append(Rectangle(int(width), int(height), int(x), int(y)))
+
+        time = file[int(file[1]) + 3]
+        timeout_reached = file[int(file[1]) + 4]
+        bound = file[int(file[1]) + 5]
+        plot_rectangles(rectangles, title=path + f" time: {time} timeout reached: {timeout_reached}  bound obtained: {bound}")
+
+def read_reached_bounds(folder_path, start, end):
+
+    heights = []
+
+    for i in range(start, end+1):
+        path = folder_path + f"/ins-{i}.txt"
+        with open(path, 'r') as file:
+            file = file.readlines()
+            _, height = file[0].split()
+            heights.append([i, int(height)])
+
+
+    print(heights)
+
+
+
+
 class VLSI_Instance:
     """
     In this implementation, VLSI_Instance is the class representing the parsed instance to be solved (with a
@@ -114,6 +147,7 @@ class VLSI_Instance:
         for j in range(0, len(self.rectangles)):
             if self.rectangles[j].width > self.W:
                 raise Exception(f"The width of the rectangle n.{j} is over the container width W = {self.W}")
+
 
     def H_LB(self):
         """

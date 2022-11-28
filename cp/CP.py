@@ -51,7 +51,7 @@ def cp_benchmark(index, timeout, method, solver_name, verbose=True, plot=True):
 
     try:
         # solve
-        result = mzn_instance.solve(timeout=timeout_, random_seed=7, free_search=True)
+        result = mzn_instance.solve(timeout=timeout_, random_seed=7, all_solutions=False,intermediate_solutions=False,free_search=True)
 
         if verbose:
             print(result)
@@ -67,7 +67,7 @@ def cp_benchmark(index, timeout, method, solver_name, verbose=True, plot=True):
 
         else:
 
-            if round(solve_time + 0.6, 0) >= timeout:
+            if round(solve_time + 0.6, 0) >= timeout: #precision on time bound depends on solver, for chuffed~0.6
                 time_over = True
                 solution_found = "NOT_OPTIMAL"
                 solve_time = timeout + 1
@@ -214,4 +214,8 @@ def plot_CP_benchmark(instances_to_solve: int = 40, solver_name: str = "chuffed"
         file.close()
 
 
-plot_CP_benchmark(instances_to_solve=40,  solver_name="chuffed", timeout=300, plot=True)
+#plot_result("../out/cp/base/chuffed/ins-1.txt")
+#read_reached_bounds("../out/cp/base/chuffed",1,40)
+# uncomment one of the two lines following this one to do a complete benchmark on all the 40 sample instances
+#plot_CP_benchmark(instances_to_solve=40,  solver_name="chuffed", timeout=300, plot=True)
+#plot_CP_benchmark(instances_to_solve=40,  solver_name="or-tools", timeout=300, plot=True)

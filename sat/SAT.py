@@ -368,6 +368,7 @@ class VLSI_SAT_solver:
         solution_found = "UPPER_BOUND"
         LB = LB_init
         UB = UB_init
+        print(LB,UB)
 
         # for "fairness", we launch the solver even if the LB has already reached the best bound
         while LB <= UB and not best_bound:
@@ -395,7 +396,7 @@ class VLSI_SAT_solver:
                 if (verbose):
                     print("success with Height = ", o)
 
-                if LB == UB:
+                if LB == UB_init:
                     best_bound = True
                     time_over = False
                     solution_found = "OPTIMAL"
@@ -471,9 +472,7 @@ class VLSI_SAT_solver:
                 rectangle_placements.append(rectangle_placement)
 
             # computing the maximum height that succeeded
-            best_height = max([(r.y + r.height) for r in rectangles])
-
-            instance.H = best_height
+            instance.H  = max([(r.y + r.height) for r in rectangles])
 
         total_time = end - start
 
@@ -500,7 +499,7 @@ class VLSI_SAT_solver:
             write_log(path="../out/sat/" + path + "/" + title_log_txt, instance=instance,
                       add_text="\n" + str(total_time) + "\n" + str(time_over)+ "\n" + solution_found)
 
-        return rectangles, best_height, total_time, time_over, z3_total_time
+        return rectangles, instance.H, total_time, time_over, z3_total_time
 
 
 def plot_SAT_benchmark(instances_to_solve=5, timeout=300, plot=False, verbose=False):
@@ -640,4 +639,6 @@ def plot_SAT_benchmark(instances_to_solve=5, timeout=300, plot=False, verbose=Fa
 
 
 # timeout is set in seconds
-plot_SAT_benchmark(instances_to_solve=40, timeout=300, plot=True)
+VLSI_SAT_solver().solve(instance_path="../instances/ins-40.txt", timeout=300, break_symmetries=False, rotate=False, verbose=False,
+                                                                   plot=False)
+#plot_SAT_benchmark(instances_to_solve=40, timeout=300, plot=True)

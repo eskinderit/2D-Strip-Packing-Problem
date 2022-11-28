@@ -1,32 +1,33 @@
-37 None
+37 44
 27
-12 37 None None
-5 3 None None
-5 4 None None
-5 6 None None
-5 10 None None
-5 14 None None
-4 3 None None
-4 4 None None
-4 5 None None
-4 6 None None
-4 10 None None
-4 22 None None
-4 24 None None
-3 3 None None
-3 4 None None
-3 5 None None
-3 6 None None
-3 7 None None
-3 8 None None
-3 9 None None
-3 11 None None
-3 12 None None
-3 13 None None
-3 14 None None
-3 17 None None
-3 18 None None
-3 21 None None
+12 37 0 0
+5 14 12 0
+5 10 17 0
+5 6 22 0
+5 4 27 0
+5 3 32 0
+4 24 32 3
+4 22 27 4
+4 10 22 6
+4 6 17 10
+4 5 12 14
+4 4 16 16
+4 3 20 16
+3 21 24 16
+3 18 12 19
+3 17 20 19
+3 14 15 20
+3 13 27 26
+3 12 30 27
+3 11 33 27
+3 9 15 34
+3 8 18 36
+3 7 21 36
+3 6 0 37
+3 5 3 37
+3 4 6 37
+3 3 9 37
 
 301
 True
+UPPER_BOUND
