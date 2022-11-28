@@ -3,7 +3,7 @@ import gc
 import matplotlib.patches as patches
 import matplotlib.pyplot as plt
 import numpy as np
-#import pandas as pd
+import pandas as pd
 
 
 class Rectangle:
@@ -98,20 +98,24 @@ def plot_result(path):
         plot_rectangles(rectangles, title=path + f" time: {time} timeout reached: {timeout_reached}  bound obtained: {bound}")
 
 def read_reached_bounds(folder_path, start, end):
-
+    """
+    Dataframe of the given folder upper bounds.
+    folder : the folder containing all the solved instances to be included on the
+    The instances included in the dataframe are from ins-{start}.txt to ins-{end+1}.txt
+    """
+    
     heights = []
+    indexes = []
 
     for i in range(start, end+1):
         path = folder_path + f"/ins-{i}.txt"
         with open(path, 'r') as file:
             file = file.readlines()
             _, height = file[0].split()
-            heights.append([i, int(height)])
+            indexes.append(i)
+            heights.append(height)
 
-
-    print(heights)
-
-
+    return pd.DataFrame(heights, index=indexes, columns=['bound_reached'])
 
 
 class VLSI_Instance:

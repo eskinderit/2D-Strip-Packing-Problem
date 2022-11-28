@@ -215,7 +215,7 @@ def plot_CP_benchmark(instances_to_solve: int = 40, solver_name: str = "chuffed"
 
 
 #plot_result("../out/cp/base/chuffed/ins-1.txt")
-#read_reached_bounds("../out/cp/base/chuffed",1,40)
+read_reached_bounds("../out/cp/base/chuffed",1,40)
 # uncomment one of the two lines following this one to do a complete benchmark on all the 40 sample instances
 #plot_CP_benchmark(instances_to_solve=40,  solver_name="chuffed", timeout=300, plot=True)
 #plot_CP_benchmark(instances_to_solve=40,  solver_name="or-tools", timeout=300, plot=True)
