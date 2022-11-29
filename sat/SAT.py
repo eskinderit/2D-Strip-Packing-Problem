@@ -274,7 +274,6 @@ class VLSI_SAT_solver:
                 if ((not SB_large_rectangles_x) and (not SB_same_rectangles)):
                     relative_positions.append(lr[j][i])
 
-                # TODO try if removing second condition here improves something. same below (i don't think it improves)
                 if ((not SB_large_rectangles_y) and (
                 not (SB_biggest_rect and (rectangles[i].height > (H - rectangles[biggest_rect_index].height) // 2)))):
                     relative_positions.append(ud[i][j])
@@ -368,7 +367,6 @@ class VLSI_SAT_solver:
         solution_found = "UPPER_BOUND"
         LB = LB_init
         UB = UB_init
-        print(LB,UB)
 
         # for "fairness", we launch the solver even if the LB has already reached the best bound
         while LB <= UB and not best_bound:
@@ -387,6 +385,8 @@ class VLSI_SAT_solver:
                 print("Attempting Height = ", o, ", Elapsed time: ", timer)
 
             if solved:
+                print("solved branch")
+                solution_found = "NOT_OPTIMAL"
 
                 model = copy.copy(instance.s.model())
                 enc_x = copy.copy(instance.enc_x)
@@ -396,38 +396,27 @@ class VLSI_SAT_solver:
                 if (verbose):
                     print("success with Height = ", o)
 
-                if LB == UB_init:
+                if LB == UB:
                     best_bound = True
-                    time_over = False
-                    solution_found = "OPTIMAL"
 
-                else:
-                    time_over = False
-                    solution_found = "NOT_PROVEN_OPTIMAL"
 
             else:
+                print("else branch")
                 # if the solving process failed, the solve is attempted with
                 # the other bisection extreme
 
                 if verbose:
                     print("fail with Height = ", o)
 
-                # case in which the solver failed because the timeout was passed
-                if timer > timeout:
-                    time_over = True
-
-                # case in which the timeout was not passed,
-                # but the problem was not satisfiable with the selected height
-                else:
-                    time_over = False
-
-                    if LB == LB_init and UB == UB_init:
-                        best_bound = True
-
                 LB = o + 1
 
         end = time.time()
         rectangle_placements = []
+
+        if z3_total_time + 0.1 >= timeout:
+            time_over = True
+            z3_total_time = 301
+
 
         # here we assign the new values of the solution just if the solver has found something
         # different from the initially computed upper bound
@@ -472,10 +461,12 @@ class VLSI_SAT_solver:
                 rectangle_placements.append(rectangle_placement)
 
             # computing the maximum height that succeeded
-            instance.H  = max([(r.y + r.height) for r in rectangles])
+            instance.H = max([(r.y + r.height) for r in rectangles])
 
         total_time = end - start
 
+        if instance.H == LB_init:
+            solution_found = "OPTIMAL"
         if plot:
             plot_rectangles(rectangles, title=instance.name)
 
@@ -497,7 +488,7 @@ class VLSI_SAT_solver:
             title_log_txt = title = re.split("/", instance.name)[-1]
 
             write_log(path="../out/sat/" + path + "/" + title_log_txt, instance=instance,
-                      add_text="\n" + str(total_time) + "\n" + str(time_over)+ "\n" + solution_found)
+                      add_text="\n" + str(z3_total_time) + "\n" + str(time_over)+ "\n" + solution_found)
 
         return rectangles, instance.H, total_time, time_over, z3_total_time
 
@@ -613,6 +604,7 @@ def plot_SAT_benchmark(instances_to_solve=5, timeout=300, plot=False, verbose=Fa
     plt.grid()
     plt.axhline(y=timeout, xmin=0, xmax=1, color='r', linestyle='-.', linewidth=2, label=f"time_limit = {timeout} s")
     # plt.yscale("log")
+    plt.ylim([0, 350])
     plt.legend()
     plt.savefig('sat_benchmark.png', transparent=False, format="png")
     plt.show()
@@ -639,6 +631,4 @@ def plot_SAT_benchmark(instances_to_solve=5, timeout=300, plot=False, verbose=Fa
 
 
 # timeout is set in seconds
-VLSI_SAT_solver().solve(instance_path="../instances/ins-40.txt", timeout=300, break_symmetries=False, rotate=False, verbose=False,
-                                                                   plot=False)
-#plot_SAT_benchmark(instances_to_solve=40, timeout=300, plot=True)
+plot_SAT_benchmark(instances_to_solve=40, timeout=300, plot=True)

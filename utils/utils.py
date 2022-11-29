@@ -103,7 +103,7 @@ def read_reached_bounds(folder_path, start, end):
     folder : the folder containing all the solved instances to be included on the
     The instances included in the dataframe are from ins-{start}.txt to ins-{end+1}.txt
     """
-    
+
     heights = []
     indexes = []
 
