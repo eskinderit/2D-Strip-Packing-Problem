@@ -385,7 +385,6 @@ class VLSI_SAT_solver:
                 print("Attempting Height = ", o, ", Elapsed time: ", timer)
 
             if solved:
-                print("solved branch")
                 solution_found = "NOT_OPTIMAL"
 
                 model = copy.copy(instance.s.model())
@@ -401,7 +400,6 @@ class VLSI_SAT_solver:
 
 
             else:
-                print("else branch")
                 # if the solving process failed, the solve is attempted with
                 # the other bisection extreme
 
