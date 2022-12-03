@@ -113,8 +113,15 @@ def read_reached_bounds(folder_path, start, end):
             file = file.readlines()
             _, height = file[0].split()
             indexes.append(i)
-            heights.append(height)
-
+            kind_of_bound = file[int(file[1]) + 5]
+            if kind_of_bound == "OPTIMAL":
+                heights.append(height + " BOLD")
+            elif kind_of_bound == "NOT_OPTIMAL":
+                heights.append(height)
+            elif kind_of_bound == "UPPER_BOUND":
+                heights.append(f" - ({height}**)")
+            else:
+                raise Exception("ïnstance not legal")
     return pd.DataFrame(heights, index=indexes, columns=['bound_reached'])
 
 
