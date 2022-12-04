@@ -1,0 +1,25 @@
+38 38
+19
+3 3 8 17 not-rot
+3 4 11 0 not-rot
+3 5 11 27 not-rot
+3 6 11 32 not-rot
+3 7 4 20 not-rot
+3 8 4 0 not-rot
+3 9 8 8 not-rot
+3 10 11 4 not-rot
+3 11 4 27 not-rot
+3 13 11 14 not-rot
+4 3 7 35 not-rot
+4 5 0 16 not-rot
+4 6 0 21 not-rot
+4 8 7 0 not-rot
+4 11 0 27 not-rot
+4 12 4 8 not-rot
+4 15 7 20 not-rot
+4 16 0 0 not-rot
+24 38 14 0 not-rot
+
+0.704
+False
+OPTIMAL

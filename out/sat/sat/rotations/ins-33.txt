@@ -1,0 +1,26 @@
+40 40
+20
+3 3 12 26 not-rot
+3 4 12 0 not-rot
+3 5 12 21 not-rot
+6 3 12 37 not-rot
+3 7 12 4 not-rot
+3 8 12 29 not-rot
+3 9 15 16 not-rot
+3 10 12 11 not-rot
+3 12 15 25 not-rot
+3 16 15 0 not-rot
+3 40 0 0 not-rot
+4 4 8 36 not-rot
+4 14 3 0 not-rot
+4 22 3 14 not-rot
+5 3 7 13 not-rot
+5 4 3 36 not-rot
+5 8 7 16 not-rot
+5 12 7 24 not-rot
+5 13 7 0 not-rot
+22 40 18 0 not-rot
+
+31.967000000000002
+False
+OPTIMAL

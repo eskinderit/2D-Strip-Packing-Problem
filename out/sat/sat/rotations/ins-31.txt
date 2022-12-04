@@ -1,0 +1,25 @@
+38 38
+19
+3 3 27 0 not-rot
+3 4 9 34 not-rot
+5 3 4 35 not-rot
+6 3 9 31 not-rot
+7 3 20 0 not-rot
+8 3 30 0 not-rot
+9 3 0 0 not-rot
+10 3 15 31 not-rot
+11 3 9 0 not-rot
+13 3 25 31 not-rot
+3 4 35 34 not-rot
+5 4 4 31 not-rot
+6 4 32 27 not-rot
+8 4 12 34 not-rot
+4 11 0 27 not-rot
+12 4 4 27 not-rot
+15 4 20 34 not-rot
+16 4 16 27 not-rot
+38 24 0 3 not-rot
+
+58.833999999999996
+False
+OPTIMAL
