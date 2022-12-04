@@ -25,7 +25,7 @@ array[COMPONENTS] of var 0..h_ub-max(min(heights),min(widths)): y_coords;
 constraint diffn(x_coords, y_coords, actual_widths, actual_heights);
 constraint forall(i in COMPONENTS)(x_coords[i] + actual_widths[i]<=fixed_width);
 constraint forall(i in COMPONENTS)(y_coords[i] + actual_heights[i]<=height);
-constraint cumulative(y_coords, actual_heights, [actual_widths[j] | j in COMPONENTS], fixed_width);
+constraint cumulative(y_coords, actual_heights, widths, fixed_width);
 constraint forall(i in COMPONENTS)
   ((rot[i] /\ actual_widths[i] == heights[i] /\ actual_heights[i] == widths[i])
   xor

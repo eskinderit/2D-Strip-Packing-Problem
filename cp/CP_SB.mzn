@@ -21,7 +21,7 @@ array[COMPONENTS] of var 0..h_ub-min(heights): y_coords; % lower left corner y c
 
 %-----------------------------------CONSTRAINTS
 constraint diffn(x_coords, y_coords, widths, heights);
-constraint cumulative(y_coords, heights, [widths[j] | j in COMPONENTS], fixed_width);
+constraint cumulative(y_coords, heights, widths, fixed_width);
 constraint forall(i in 1..n_components)((x_coords[i] + widths[i])<=fixed_width);
 constraint forall(i in 1..n_components)((y_coords[i] + heights[i])<=height);
 
