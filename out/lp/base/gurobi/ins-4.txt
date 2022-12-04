@@ -1,0 +1,13 @@
+11 11
+7
+3 3 8 4 not-rot
+3 4 8 0 not-rot
+3 5 0 0 not-rot
+3 6 0 5 not-rot
+5 3 3 4 not-rot
+5 4 3 0 not-rot
+8 4 3 7 not-rot
+
+0.061
+False
+OPTIMAL

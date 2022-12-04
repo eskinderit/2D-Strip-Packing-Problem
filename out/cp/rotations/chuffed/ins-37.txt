@@ -1,0 +1,34 @@
+30 73
+28
+5 7 24 21 not-rot
+5 14 0 38 not-rot
+8 14 11 31 not-rot
+8 4 19 31 not-rot
+13 21 0 0 not-rot
+11 7 0 21 not-rot
+11 14 13 17 not-rot
+5 14 5 38 not-rot
+5 4 10 45 not-rot
+3 18 7 52 not-rot
+3 21 4 52 not-rot
+11 17 13 0 not-rot
+11 4 0 28 not-rot
+4 7 10 49 not-rot
+4 5 7 32 not-rot
+7 6 0 32 not-rot
+5 18 19 35 not-rot
+5 3 24 28 not-rot
+3 7 22 53 not-rot
+3 5 25 53 not-rot
+4 18 15 45 not-rot
+4 3 0 52 not-rot
+2 12 28 53 not-rot
+2 6 11 21 not-rot
+5 18 24 35 not-rot
+5 21 24 0 not-rot
+3 17 19 53 not-rot
+3 4 27 31 not-rot
+
+301
+True
+UPPER_BOUND

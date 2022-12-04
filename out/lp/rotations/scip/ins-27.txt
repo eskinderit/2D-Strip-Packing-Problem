@@ -1,0 +1,27 @@
+34 36
+21
+3 3 27 19 not-rot
+3 4 21 26 not-rot
+3 5 27 22 not-rot
+3 6 31 27 not-rot
+7 3 4 19 rot
+3 8 31 19 not-rot
+9 3 0 33 rot
+10 3 14 30 rot
+11 3 22 3 rot
+12 3 1 23 rot
+13 3 11 19 rot
+3 14 24 19 not-rot
+21 3 0 26 rot
+22 3 0 3 rot
+25 3 9 33 rot
+34 3 0 0 rot
+4 4 0 19 not-rot
+4 5 27 28 not-rot
+11 4 13 22 rot
+14 4 0 29 rot
+34 12 0 7 rot
+
+301
+True
+NOT_OPTIMAL

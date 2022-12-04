@@ -1,0 +1,20 @@
+19 19
+14
+3 3 9 0 not-rot
+4 3 10 9 rot
+5 3 14 9 rot
+6 3 13 16 rot
+7 3 12 0 rot
+8 3 0 6 rot
+9 3 0 0 rot
+10 3 0 9 rot
+11 3 8 6 rot
+13 3 0 16 rot
+19 3 0 3 rot
+5 4 6 12 rot
+6 4 0 12 rot
+8 4 11 12 rot
+
+38.554
+False
+OPTIMAL

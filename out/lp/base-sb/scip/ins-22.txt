@@ -1,0 +1,30 @@
+29 31
+24
+3 3 9 28 not-rot
+3 4 0 27 not-rot
+3 5 23 15 not-rot
+3 6 4 0 not-rot
+3 7 7 0 not-rot
+3 8 23 20 not-rot
+3 9 20 19 not-rot
+3 10 26 0 not-rot
+3 11 23 4 not-rot
+3 15 20 4 not-rot
+3 18 8 7 not-rot
+3 20 26 10 not-rot
+4 3 22 28 not-rot
+4 4 12 27 not-rot
+4 5 0 0 not-rot
+4 6 5 25 not-rot
+4 7 16 9 not-rot
+4 9 16 0 not-rot
+4 15 16 16 not-rot
+4 18 4 7 not-rot
+4 20 0 5 not-rot
+5 4 20 0 not-rot
+5 8 11 19 not-rot
+5 17 11 0 not-rot
+
+301
+True
+NOT_OPTIMAL

@@ -1,0 +1,16 @@
+16 16
+10
+3 3 0 13 not-rot
+4 3 12 0 rot
+5 3 8 3 rot
+3 6 13 3 not-rot
+3 7 0 6 not-rot
+8 3 0 3 rot
+10 3 3 6 rot
+12 3 0 0 rot
+4 7 3 9 not-rot
+9 7 7 9 rot
+
+0.113
+False
+OPTIMAL
