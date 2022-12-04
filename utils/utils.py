@@ -89,7 +89,7 @@ def plot_result(path):
         file = file.readlines()
 
         for j in range(2, int(file[1]) + 2):
-            width, height, x, y = file[j].split()
+            width, height, x, y, _ = file[j].split()
             rectangles.append(Rectangle(int(width), int(height), int(x), int(y)))
 
         time = file[int(file[1]) + 3]
