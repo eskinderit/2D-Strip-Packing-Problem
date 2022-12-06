@@ -116,14 +116,14 @@ When the corresponding enviroment is set with the instruxtions se
 - cp:
 	- run ``python CP.py`` in the cp folder to process the whole benchmark on Or-Tools or use the functions
 	  inside that file to process just a single instance.
-- lp:
- 	- run ``python LP.py`` in the lp folder to process the whole benchmark on Gurobi or use the functions
-	  inside that file to process just a single instance.
 - sat:
  	- run ``python SAT.py`` in the sat folder to process the whole benchmark on Z3 or use the functions
 	  inside that file to process just a single instance.
 - smt:
  	- run the notebook ``smt.ipynb`` in the smt/src folder to process the whole benchmark on Z3 or use the functions
+	  inside that file to process just a single instance.
+- lp:
+ 	- run ``python LP.py`` in the lp folder to process the whole benchmark on Gurobi or use the functions
 	  inside that file to process just a single instance.
 
  
