@@ -321,10 +321,7 @@ def plot_LP_benchmark(instances_to_solve: int = 40, solver_name: str = "gurobi",
         file.close()
 
 
-#for i in range(1,40):
-#    lp_benchmark(i, 300, "base-sb", "gurobi", verbose = False, plot=True)
+# plot_LP_benchmark(instances_to_solve=40, solver_name="scip", timeout=300, plot=True)
+plot_LP_benchmark(instances_to_solve=40, solver_name="gurobi", timeout=300, plot=True)
 
-# timeout is set in seconds
-plot_LP_benchmark(instances_to_solve=40, solver_name="scip"
-                  , timeout=300, plot=True)
 
