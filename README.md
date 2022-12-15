@@ -1,5 +1,5 @@
 # :milky_way: 2D Strip Packing Problem - VLSI :milky_way:
-In this project, we try 4 different optimization techniques to solve the very well known [2D Strip Packing problem](https://en.wikipedia.org/wiki/Strip_packing_problem). To model it in an intuitive way.
+In this project, we try 4 different optimization techniques to solve the very well known [2D Strip Packing problem](https://en.wikipedia.org/wiki/Strip_packing_problem). To model it in an intuitive way, we think of it as the problem of placing a set of rectangular chips in a silicon plate (which is a bigger rectangle itself) in order to occupy the least possible space.
 To understand the reasons of our implementations, read the ``Report.pdf`` included in this repo.
 
 ©Alessandro D’Amico ©Andrea Virgillito ©Sfarzo El Husseini
