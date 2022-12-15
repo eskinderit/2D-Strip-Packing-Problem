@@ -1,5 +1,5 @@
 # 2D Strip Packing Problem - VLSI
-In this project, we try 4 different optimization techniques to solve the very well known problem of 2D Strip Packing. To model it in an intuitive way.
+In this project, we try 4 different optimization techniques to solve the very well known [2D Strip Packing problem](https://en.wikipedia.org/wiki/Strip_packing_problem). To model it in an intuitive way.
 To understand the reasons of our implementations, read the ``Report.pdf`` included in this repo.
 
 ©Alessandro D’Amico ©Andrea Virgillito ©Sfarzo El Husseini
