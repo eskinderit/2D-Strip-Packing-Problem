@@ -63,14 +63,14 @@ The collections of rectangles to be placed are located in the
 Each of them is named "ins-{x}.txt", where {x} is the instance number.
 Each one of them is of this form:
 
-_____________ ins-{x}.txt _____________
- W
- n_rect
- width(0) height(0)
- width(1) height(1) 
- ...
- width(n_rect) height(n_rect) 
-_____________________________________
+_____________ ins-{x}.txt _____________  
+ W  
+ n_rect  
+ width(0) height(0)  
+ width(1) height(1)  
+ ...  
+ width(n_rect) height(n_rect)  
+ _____________________________________
 
 where we have
 
