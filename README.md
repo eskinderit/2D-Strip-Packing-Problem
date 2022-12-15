@@ -1,3 +1,7 @@
+# 2D Strip Packing Problem - VLSI
+In this project, we try 4 different optimization techniques to solve the very well known problem of 2D Strip Packing. To model it in an intuitive way.
+To understand the reasons of our implementations, read the ``Report.pdf`` included in this repo.
+
 ©Alessandro D’Amico ©Andrea Virgillito ©Sfarzo El Husseini
 
 
@@ -75,11 +79,10 @@ _____________ ins-{x}.txt _____________
 ```
 where we have
 
-W: the width of the strip
-n_rect: the number of rectangles to be placed in the corresponding 
-	instance (collection)
-width(i): the width of the rectangle i
-height(i): the height of the rectangle i
+- ``W``: the width of the strip
+- ``n_rect``: the number of rectangles to be placed in the corresponding instance (collection)
+- ``width(i)``: the width of the rectangle i
+- ``height(i)``: the height of the rectangle i
 
  _____________________________________
 
@@ -116,20 +119,20 @@ _____________ ins-{x}.txt _____________
 ```
 In these output files there are some added numbers (wrt the plain input file described above)
 
-- H: the overall height of the strip
-- x(i): the position on the x-axis of the low bottom corner of the 
+- ``H``: the overall height of the strip
+- ``x(i)``: the position on the x-axis of the low bottom corner of the 
 	   rectangle i 
-- y(i): the position on the x-axis of the low bottom corner of the 
+- ``y(i)``: the position on the x-axis of the low bottom corner of the 
 	   rectangle i
-- rot(i): "rot" if the rectangle i has been rotated (WARNING: in that 
+- ``rot(i)``: "rot" if the rectangle i has been rotated (WARNING: in that 
 	    case the height and the width are already swapped),
 	    "not-rot" otherwise
-- time: the time taken from the solver (in seconds)
-- overtime: True if the solver has exceeded the time limit (300s in our tests)
+- ``time``: the time taken from the solver (in seconds)
+- ``overtime``: True if the solver has exceeded the time limit (300s in our tests)
 - kind_of_bound: 
-	- "OPTIMAL" if the height corresponding to the perfect packaging has been reached
-	- "NOT_OPTIMAL" if at least a valid solution has been computed by the solver within the time limit
-	- "UPPER_BOUND" if no solution from the solver has been computed within the time limit:
+	- ``OPTIMAL`` if the height corresponding to the perfect packaging has been reached
+	- ``NOT_OPTIMAL`` if at least a valid solution has been computed by the solver within the time limit
+	- ``UPPER_BOUND`` if no solution from the solver has been computed within the time limit:
 	  in this case, we use just the height (and the positioning of the rectangles)
 	  computed by the method used to obtain the upper bound (which is )    
  _____________________________________
