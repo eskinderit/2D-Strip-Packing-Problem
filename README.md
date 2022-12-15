@@ -1,4 +1,4 @@
-# 2D Strip Packing Problem - VLSI
+# :milky_way: 2D Strip Packing Problem - VLSI :milky_way:
 In this project, we try 4 different optimization techniques to solve the very well known [2D Strip Packing problem](https://en.wikipedia.org/wiki/Strip_packing_problem). To model it in an intuitive way.
 To understand the reasons of our implementations, read the ``Report.pdf`` included in this repo.
 
