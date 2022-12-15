@@ -7,13 +7,13 @@ Some general requirements all valid for all the methods, since they use common p
 packages for the upper bound computation, plotting and parsing of the iinput/output instances:
 
 - python (tested on Python 3.8)
-- pandas
-- tqdm
-- matplotlib
-- numpy
-- re
+- pandas ``pip install pandas``
+- tqdm ``pip install tqdm``
+- matplotlib ``pip install matplotlib``
+- numpy ``pip install numpy``
+- re ``pip install regex``
 - gc
-- datetime
+- datetime ``pip install DateTime``
 - time 
 
 
@@ -98,18 +98,18 @@ the "out" folder, divided by
 - solver (depending on the modeling technique, sometimes different solvers
 	  were used)
 
-_____________ ins-{x}.txt _____________
- W H
- n_rectangles
- width(0) height(0) x_(0) y_(0) rot(0)
- width(1) height(1) x_(1) y_(1) rot(1)
- ...
- width(n_rect) height(n_rect) x(n_rect) y(n_rect) rot(n_rect)
-
- time
- overtime
- kind_of_bound
-_____________________________________
+_____________ ins-{x}.txt _____________  
+ W H  
+ n_rectangles  
+ width(0) height(0) x_(0) y_(0) rot(0)  
+ width(1) height(1) x_(1) y_(1) rot(1)  
+ ...  
+ width(n_rect) height(n_rect) x(n_rect) y(n_rect) rot(n_rect)  
+   
+ time  
+ overtime  
+ kind_of_bound  
+ _____________________________________
 
 In these output files there are some added numbers (wrt the plain input file described above)
 
