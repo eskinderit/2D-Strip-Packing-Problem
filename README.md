@@ -63,6 +63,7 @@ The collections of rectangles to be placed are located in the
 Each of them is named "ins-{x}.txt", where {x} is the instance number.
 Each one of them is of this form:
 
+```
 _____________ ins-{x}.txt _____________  
  W  
  n_rect  
@@ -71,7 +72,7 @@ _____________ ins-{x}.txt _____________
  ...  
  width(n_rect) height(n_rect)  
  _____________________________________
-
+```
 where we have
 
 W: the width of the strip
@@ -79,7 +80,8 @@ n_rect: the number of rectangles to be placed in the corresponding
 	instance (collection)
 width(i): the width of the rectangle i
 height(i): the height of the rectangle i
- 
+
+ _____________________________________
 
 ## Output format
 
@@ -98,6 +100,7 @@ the "out" folder, divided by
 - solver (depending on the modeling technique, sometimes different solvers
 	  were used)
 
+```
 _____________ ins-{x}.txt _____________  
  W H  
  n_rectangles  
@@ -110,7 +113,7 @@ _____________ ins-{x}.txt _____________
  overtime  
  kind_of_bound  
  _____________________________________
-
+```
 In these output files there are some added numbers (wrt the plain input file described above)
 
 - H: the overall height of the strip
@@ -129,3 +132,4 @@ In these output files there are some added numbers (wrt the plain input file des
 	- "UPPER_BOUND" if no solution from the solver has been computed within the time limit:
 	  in this case, we use just the height (and the positioning of the rectangles)
 	  computed by the method used to obtain the upper bound (which is )    
+ _____________________________________
