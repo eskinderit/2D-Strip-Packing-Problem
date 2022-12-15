@@ -41,7 +41,7 @@ The requirements are different across the various modeling techniques:
 	  system path variable for em) - more info on 
 	  https://developers.google.com/optimization/install/python
 	
-## PLAY WITH IT :)
+## Play with it :rocket:
 When the corresponding enviroment is set as above,
 
 - cp:
