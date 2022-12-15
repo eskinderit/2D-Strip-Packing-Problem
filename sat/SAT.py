@@ -14,7 +14,7 @@ class VLSI_SAT_Instance(VLSI_Instance):
     def load_sat_instance(self, H, rotate=False):
         self.H = H
         self.lr = [[Bool(f"lr_({i},{j})") for j in range(self.n_instances)] for i in range(self.n_instances)]
-        self.ud = [[Bool(f"ud_({i},{j})") for j in range(self.n_instances)] for i in range(self.n_instances)]
+        self.du = [[Bool(f"du_({i},{j})") for j in range(self.n_instances)] for i in range(self.n_instances)]
         self.s = Solver()
 
         if rotate:
@@ -122,7 +122,7 @@ class VLSI_SAT_solver:
 
     def no_overlap_constraints_rotation(self, instance, break_symmetries=False):
         lr = instance.lr
-        ud = instance.ud
+        du = instance.du
         enc_x = instance.enc_x
         enc_y = instance.enc_y
         s = instance.s
@@ -148,9 +148,9 @@ class VLSI_SAT_solver:
 
                 relative_positions.append(lr[j][i])
 
-                relative_positions.append(ud[i][j])
+                relative_positions.append(du[i][j])
 
-                relative_positions.append(ud[j][i])
+                relative_positions.append(du[j][i])
 
                 s.add(Or(relative_positions))
 
@@ -197,43 +197,43 @@ class VLSI_SAT_solver:
                 # 3
 
                 if (SB_square_i or (rectangles[i].height > W)):
-                    s.add([Or(Not(ud[i][j]), Not(enc_y[j][t])) for t in range(0, rectangles[i].height)])
-                    s.add([Or(Not(ud[i][j]), Not(enc_y[j][rectangles[i].height + s]), enc_y[i][s]) for s in
+                    s.add([Or(Not(du[i][j]), Not(enc_y[j][t])) for t in range(0, rectangles[i].height)])
+                    s.add([Or(Not(du[i][j]), Not(enc_y[j][rectangles[i].height + s]), enc_y[i][s]) for s in
                            range(0, H - rectangles[i].height)])
 
                 else:
 
-                    s.add([Implies(Not(r[i]), (Or(Not(ud[i][j]), Not(enc_y[j][t])))) for t in
+                    s.add([Implies(Not(r[i]), (Or(Not(du[i][j]), Not(enc_y[j][t])))) for t in
                            range(0, rectangles[i].height)])
-                    s.add([Implies(Not(r[i]), (Or(Not(ud[i][j]), Not(enc_y[j][rectangles[i].height + s]), enc_y[i][s])))
+                    s.add([Implies(Not(r[i]), (Or(Not(du[i][j]), Not(enc_y[j][rectangles[i].height + s]), enc_y[i][s])))
                            for s in range(0, H - rectangles[i].height)])
 
-                    s.add([Implies(r[i], (Or(Not(ud[i][j]), Not(enc_y[j][t])))) for t in range(0, rectangles[i].width)])
-                    s.add([Implies(r[i], (Or(Not(ud[i][j]), Not(enc_y[j][rectangles[i].width + s]), enc_y[i][s]))) for s
+                    s.add([Implies(r[i], (Or(Not(du[i][j]), Not(enc_y[j][t])))) for t in range(0, rectangles[i].width)])
+                    s.add([Implies(r[i], (Or(Not(du[i][j]), Not(enc_y[j][rectangles[i].width + s]), enc_y[i][s]))) for s
                            in range(0, H - rectangles[i].width)])
 
                 # 4
 
                 if (SB_square_j or (rectangles[j].height > W)):
-                    s.add([Or(Not(ud[j][i]), Not(enc_y[i][t])) for t in range(0, rectangles[j].height)])
-                    s.add([Or(Not(ud[j][i]), Not(enc_y[i][rectangles[j].height + s]), enc_y[j][s]) for s in
+                    s.add([Or(Not(du[j][i]), Not(enc_y[i][t])) for t in range(0, rectangles[j].height)])
+                    s.add([Or(Not(du[j][i]), Not(enc_y[i][rectangles[j].height + s]), enc_y[j][s]) for s in
                            range(0, H - rectangles[j].height)])
 
                 else:
 
-                    s.add([Implies(Not(r[j]), (Or(Not(ud[j][i]), Not(enc_y[i][t])))) for t in
+                    s.add([Implies(Not(r[j]), (Or(Not(du[j][i]), Not(enc_y[i][t])))) for t in
                            range(0, rectangles[j].height)])
-                    s.add([Implies(Not(r[j]), (Or(Not(ud[j][i]), Not(enc_y[i][rectangles[j].height + s]), enc_y[j][s])))
+                    s.add([Implies(Not(r[j]), (Or(Not(du[j][i]), Not(enc_y[i][rectangles[j].height + s]), enc_y[j][s])))
                            for s in range(0, H - rectangles[j].height)])
 
-                    s.add([Implies(r[j], (Or(Not(ud[j][i]), Not(enc_y[i][t])))) for t in range(0, rectangles[j].width)])
-                    s.add([Implies(r[j], (Or(Not(ud[j][i]), Not(enc_y[i][rectangles[j].width + s]), enc_y[j][s]))) for s
+                    s.add([Implies(r[j], (Or(Not(du[j][i]), Not(enc_y[i][t])))) for t in range(0, rectangles[j].width)])
+                    s.add([Implies(r[j], (Or(Not(du[j][i]), Not(enc_y[i][rectangles[j].width + s]), enc_y[j][s]))) for s
                            in range(0, H - rectangles[j].width)])
 
     def no_overlap_constraints(self, instance, break_symmetries=False):
 
         lr = instance.lr
-        ud = instance.ud
+        du = instance.du
         enc_x = instance.enc_x
         enc_y = instance.enc_y
         s = instance.s
@@ -260,7 +260,7 @@ class VLSI_SAT_solver:
                 if (break_symmetries and (rectangles[i].height == rectangles[j].height) and (
                         rectangles[i].width == rectangles[j].width)):
                     SB_same_rectangles = True
-                    s.add(Implies(ud[i][j], lr[j][i]))
+                    s.add(Implies(du[i][j], lr[j][i]))
 
                 if (break_symmetries and j == biggest_rect_index):
                     SB_biggest_rect = True
@@ -271,15 +271,14 @@ class VLSI_SAT_solver:
                 not (SB_biggest_rect and (rectangles[i].width > (W - rectangles[biggest_rect_index].width) // 2)))):
                     relative_positions.append(lr[i][j])
 
-                if ((not SB_large_rectangles_x) and (not SB_same_rectangles)):
+                if (not SB_large_rectangles_x) and (not SB_same_rectangles):
                     relative_positions.append(lr[j][i])
 
-                if ((not SB_large_rectangles_y) and (
-                not (SB_biggest_rect and (rectangles[i].height > (H - rectangles[biggest_rect_index].height) // 2)))):
-                    relative_positions.append(ud[i][j])
+                if not SB_large_rectangles_y:
+                    relative_positions.append(du[i][j])
 
-                if ((not SB_large_rectangles_y)):
-                    relative_positions.append(ud[j][i])
+                if (not SB_large_rectangles_y) and (not (SB_biggest_rect and (rectangles[i].height > (H - rectangles[biggest_rect_index].height) // 2))):
+                    relative_positions.append(du[j][i])
 
                 s.add(Or(relative_positions))
 
@@ -297,16 +296,16 @@ class VLSI_SAT_solver:
                            range(0, W - rectangles[j].width)])
 
                 # 3
-                if ((not SB_large_rectangles_y) and (
-                not (SB_biggest_rect and (rectangles[i].height > (H - rectangles[biggest_rect_index].height) // 2)))):
-                    s.add([Or(Not(ud[i][j]), Not(enc_y[j][t])) for t in range(0, rectangles[i].height)])
-                    s.add([Or(Not(ud[i][j]), Not(enc_y[j][rectangles[i].height + s]), enc_y[i][s]) for s in
+                if (not SB_large_rectangles_y):
+                    s.add([Or(Not(du[i][j]), Not(enc_y[j][t])) for t in range(0, rectangles[i].height)])
+                    s.add([Or(Not(du[i][j]), Not(enc_y[j][rectangles[i].height + s]), enc_y[i][s]) for s in
                            range(0, H - rectangles[i].height)])
 
                 # 4
-                if ((not SB_large_rectangles_y)):
-                    s.add([Or(Not(ud[j][i]), Not(enc_y[i][t])) for t in range(0, rectangles[j].height)])
-                    s.add([Or(Not(ud[j][i]), Not(enc_y[i][rectangles[j].height + s]), enc_y[j][s]) for s in
+                if (not SB_large_rectangles_y) and (
+                not (SB_biggest_rect and (rectangles[i].height > (H - rectangles[biggest_rect_index].height) // 2))):
+                    s.add([Or(Not(du[j][i]), Not(enc_y[i][t])) for t in range(0, rectangles[j].height)])
+                    s.add([Or(Not(du[j][i]), Not(enc_y[i][rectangles[j].height + s]), enc_y[j][s]) for s in
                            range(0, H - rectangles[j].height)])
 
     def build_constraints_solve(self, instance, break_symmetries=False, rotate=False):
