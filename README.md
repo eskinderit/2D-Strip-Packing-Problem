@@ -4,8 +4,7 @@ To understand the reasons of our implementations, read the ``Report.pdf`` includ
 
 ©Alessandro D’Amico ©Andrea Virgillito ©Sfarzo El Husseini
 
-![Example of a computed solution](https://github.com/eskinderit/2D-Strip-Packing-Problem/blob/main/other/solution_example.png?raw=true | width=100)
-<img src="https://github.com/eskinderit/2D-Strip-Packing-Problem/blob/main/other/solution_example.png?raw=true" width="100">Example of a computed solution</img>
+<img src="https://github.com/eskinderit/2D-Strip-Packing-Problem/blob/main/other/solution_example.png?raw=true" width="400">
 
 
 
