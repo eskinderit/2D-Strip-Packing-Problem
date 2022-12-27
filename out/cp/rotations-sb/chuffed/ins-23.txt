@@ -1,0 +1,26 @@
+30 36
+20
+11 30 0 0 not-rotated
+4 9 11 0 not-rotated
+4 8 15 0 not-rotated
+4 6 19 0 not-rotated
+4 4 23 0 not-rotated
+4 3 23 4 not-rotated
+3 25 27 0 not-rotated
+3 19 19 6 not-rotated
+3 16 22 7 not-rotated
+3 14 15 8 not-rotated
+3 13 11 9 not-rotated
+3 11 11 22 not-rotated
+3 10 14 22 not-rotated
+3 9 22 23 not-rotated
+3 8 17 25 not-rotated
+3 7 25 25 not-rotated
+3 6 0 30 not-rotated
+3 5 3 30 not-rotated
+3 4 6 30 not-rotated
+3 3 14 32 not-rotated
+
+301
+True
+UPPER_BOUND
