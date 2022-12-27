@@ -1,0 +1,35 @@
+39 41
+29
+39 15 0 26 rotated
+5 18 0 0 not-rotated
+5 13 14 4 not-rotated
+11 5 28 21 rotated
+5 10 6 16 not-rotated
+8 5 20 17 rotated
+6 5 0 21 rotated
+5 5 9 4 not-rotated
+5 4 33 17 not-rotated
+3 5 36 5 rotated
+16 4 23 13 rotated
+15 4 11 0 rotated
+4 12 19 4 not-rotated
+4 9 5 0 not-rotated
+8 4 20 22 rotated
+6 4 5 9 rotated
+5 4 28 17 rotated
+4 4 32 3 not-rotated
+4 3 0 18 not-rotated
+15 3 23 10 rotated
+3 11 11 11 not-rotated
+3 10 26 0 not-rotated
+3 9 17 17 not-rotated
+3 8 14 18 not-rotated
+3 7 29 0 not-rotated
+6 3 33 0 rotated
+5 3 5 13 rotated
+4 3 29 7 rotated
+3 3 11 22 not-rotated
+
+301
+True
+NOT_OPTIMAL
