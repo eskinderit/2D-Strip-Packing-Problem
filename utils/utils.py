@@ -21,6 +21,7 @@ class Rectangle:
         self.y = y
         self.width = width
         self.height = height
+        self.rotated = None
 
     def is_square(self):
         return self.height == self.width
@@ -73,7 +74,12 @@ def write_log(path, instance, add_text=""):
     out_text = str(instance.W) + " " + str(instance.H) + "\n"
     out_text += str(len(instance.rectangles)) + "\n"
     for r in instance.rectangles:
-        out_text += str(r.width) + " " + str(r.height) + " " + str(r.x) + " " + str(r.y) + "\n"
+        rotation_log = False
+        if r.rotated:
+            rotation_log = "rotated"
+        else:
+            rotation_log = "not-rotated"
+        out_text += str(r.width) + " " + str(r.height) + " " + str(r.x) + " " + str(r.y) + " " + rotation_log + "\n"
 
     out_text += add_text
 
