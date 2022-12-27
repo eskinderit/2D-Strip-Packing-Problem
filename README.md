@@ -47,16 +47,16 @@ The requirements are different across the various modeling techniques:
 When the corresponding enviroment is set as above,
 
 - cp:
-	- run ``python CP.py`` in the cp folder to process the whole benchmark on Or-Tools or use the functions
+	- run ``python CP.py`` in the cp/src folder to process the whole benchmark on Or-Tools or use the functions
 	  inside that file to process just a single instance.
 - sat:
- 	- run ``python SAT.py`` in the sat folder to process the whole benchmark on Z3 or use the functions
+ 	- run ``python SAT.py`` in the sat/src folder to process the whole benchmark on Z3 or use the functions
 	  inside that file to process just a single instance.
 - smt:
- 	- run the notebook ``smt.ipynb`` in the smt/src folder to process the whole benchmark on Z3 or use the functions
+ 	- run ``python SMT.py`` in the smt/src folder to process the whole benchmark on Z3 or use the functions
 	  inside that file to process just a single instance.
 - lp:
- 	- run ``python LP.py`` in the lp folder to process the whole benchmark on Gurobi or use the functions
+ 	- run ``python LP.py`` in the lp/src folder to process the whole benchmark on Gurobi or use the functions
 	  inside that file to process just a single instance.
 
 
@@ -126,9 +126,9 @@ In these output files there are some added numbers (wrt the plain input file des
 	   rectangle i 
 - ``y(i)``: the position on the x-axis of the low bottom corner of the 
 	   rectangle i
-- ``rot(i)``: "rot" if the rectangle i has been rotated (WARNING: in that 
+- ``rot(i)``: "rotated" if the rectangle i has been rotated (WARNING: in that 
 	    case the height and the width are already swapped),
-	    "not-rot" otherwise
+	    "not-rotated" otherwise
 - ``time``: the time taken from the solver (in seconds)
 - ``overtime``: True if the solver has exceeded the time limit (300s in our tests)
 - kind_of_bound: 
