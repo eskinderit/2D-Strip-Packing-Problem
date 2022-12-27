@@ -1,0 +1,27 @@
+34 34
+21
+12 34 7 0 not-rotated
+4 14 0 9 not-rotated
+4 11 0 23 not-rotated
+4 5 3 0 not-rotated
+4 4 3 5 not-rotated
+3 34 25 0 not-rotated
+3 25 31 9 not-rotated
+3 22 28 12 not-rotated
+3 21 4 9 not-rotated
+3 14 22 15 not-rotated
+3 13 19 0 not-rotated
+3 12 28 0 not-rotated
+3 11 19 13 not-rotated
+3 10 19 24 not-rotated
+3 9 0 0 not-rotated
+3 8 22 0 not-rotated
+3 7 22 8 not-rotated
+3 6 31 3 not-rotated
+3 5 22 29 not-rotated
+3 4 4 30 not-rotated
+3 3 31 0 not-rotated
+
+22.62880849838257
+False
+OPTIMAL

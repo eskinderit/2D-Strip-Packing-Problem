@@ -1,0 +1,10 @@
+8 8
+4
+5 5 0 3 not-rotated
+5 3 0 0 not-rotated
+3 5 5 3 not-rotated
+3 3 5 0 not-rotated
+
+0.12499046325683594
+False
+OPTIMAL

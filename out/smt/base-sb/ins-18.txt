@@ -1,0 +1,25 @@
+25 25
+19
+6 3 19 0 not-rotated
+4 13 6 7 not-rotated
+4 7 6 0 not-rotated
+4 5 6 20 not-rotated
+3 25 10 0 not-rotated
+3 19 13 0 not-rotated
+3 18 16 0 not-rotated
+3 17 0 8 not-rotated
+3 14 19 11 not-rotated
+3 13 22 12 not-rotated
+3 11 3 14 not-rotated
+3 10 3 4 not-rotated
+3 9 22 3 not-rotated
+3 8 0 0 not-rotated
+3 7 16 18 not-rotated
+3 6 13 19 not-rotated
+3 5 19 3 not-rotated
+3 4 3 0 not-rotated
+3 3 19 8 not-rotated
+
+6.042017459869385
+False
+OPTIMAL

@@ -1,0 +1,33 @@
+32 40
+27
+4 18 0 0 not-rotated
+4 11 4 0 not-rotated
+4 10 8 0 not-rotated
+4 7 12 0 not-rotated
+4 6 16 0 not-rotated
+4 5 20 0 not-rotated
+4 4 24 0 not-rotated
+4 3 28 0 not-rotated
+3 27 28 3 not-rotated
+3 25 24 4 not-rotated
+3 24 20 5 not-rotated
+3 23 16 6 not-rotated
+3 22 12 7 not-rotated
+3 18 8 10 not-rotated
+3 15 4 11 not-rotated
+3 14 0 18 not-rotated
+3 13 3 26 not-rotated
+3 12 6 28 not-rotated
+3 11 9 28 not-rotated
+3 10 12 29 not-rotated
+3 9 15 29 not-rotated
+3 8 18 29 not-rotated
+3 7 21 29 not-rotated
+3 6 24 29 not-rotated
+3 5 27 30 not-rotated
+3 4 0 32 not-rotated
+3 3 24 35 not-rotated
+
+301.13783168792725
+True
+OPTIMAL
