@@ -1,0 +1,25 @@
+23 29
+19
+6 3 0 0 not-rotated
+4 12 6 0 not-rotated
+4 11 10 0 not-rotated
+4 10 14 0 not-rotated
+4 6 18 0 not-rotated
+4 4 0 3 not-rotated
+4 3 18 6 not-rotated
+3 20 0 7 not-rotated
+3 14 3 7 not-rotated
+3 12 18 9 not-rotated
+3 11 14 10 not-rotated
+3 10 10 11 not-rotated
+3 9 6 12 not-rotated
+3 8 3 21 not-rotated
+3 7 6 21 not-rotated
+3 6 9 21 not-rotated
+3 5 12 21 not-rotated
+3 4 15 21 not-rotated
+3 3 18 21 not-rotated
+
+301.0040955543518
+True
+OPTIMAL

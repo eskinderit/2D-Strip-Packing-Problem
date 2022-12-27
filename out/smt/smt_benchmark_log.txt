@@ -1,0 +1,8 @@
+total Base time        -- mean: 113.35174291729928 std: 183.80514399857896 
+total rotated time     -- mean: 139.0185749232769 std: 137.83545212640692 
+total SB time          -- mean: 148.4349732041359 std: 370.3159557002195 
+total rotated + SB time-- mean: 146.65061495304107 std: 132.86158748262525 
+z3 Base time           -- mean: 95.575675 std: 123.36912556944453 
+z3 rotated time        -- mean: 137.93095 std: 137.36709754703816 
+z3 SB time             -- mean: 96.76585 std: 122.22142339920403 
+z3 rotated + SB time   -- mean: 145.489575 std: 132.2237417275898
