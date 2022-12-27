@@ -1,0 +1,22 @@
+22 22
+16
+6 4 10 18 not-rotated
+4 19 6 3 not-rotated
+4 3 6 0 not-rotated
+3 22 0 0 not-rotated
+3 14 3 8 not-rotated
+3 13 19 5 not-rotated
+3 12 10 6 not-rotated
+3 11 13 7 not-rotated
+3 10 16 9 not-rotated
+3 9 16 0 not-rotated
+3 8 3 0 not-rotated
+3 7 13 0 not-rotated
+3 6 10 0 not-rotated
+3 5 19 0 not-rotated
+3 4 19 18 not-rotated
+3 3 16 19 not-rotated
+
+1.885
+False
+OPTIMAL
