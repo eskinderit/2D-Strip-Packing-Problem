@@ -1,0 +1,25 @@
+25 26
+19
+6 3 19 23 not-rotated
+13 4 12 10 rotated
+4 7 21 0 not-rotated
+5 4 15 6 rotated
+3 25 0 0 not-rotated
+19 3 6 14 rotated
+18 3 7 17 rotated
+17 3 3 0 rotated
+3 14 3 6 not-rotated
+13 3 3 23 rotated
+11 3 3 20 rotated
+10 3 14 20 rotated
+3 9 9 3 not-rotated
+3 8 6 6 not-rotated
+3 7 12 3 not-rotated
+6 3 15 3 rotated
+5 3 20 7 rotated
+4 3 3 3 rotated
+3 3 16 23 not-rotated
+
+301
+True
+NOT_OPTIMAL
